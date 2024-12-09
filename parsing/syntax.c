@@ -36,8 +36,9 @@ t_token *free_spaces (t_token *curr)
 
 int check_pipe(t_token **final) 
 {
-    t_token *curr = *final;
-
+    t_token *curr;
+	
+	curr = *final;
     if (curr && curr->value == PIPE) 
 		return (ft_printf(2, "syntax error\n"), 1);	
     while (curr) 
@@ -96,8 +97,8 @@ int check_redir(t_token **final)
 			if(curr->value == WHITESPACE)
 			{
             	curr = free_spaces(curr);
-				if (!curr || curr->value == HEREDOC || curr->value == PIPE ||  curr->value == APPEND || curr->value == REDIRECTION_IN || curr->value == REDIRECTION_OUT) 
-                	return ( ft_printf(2, "syntax error\n"), 1);
+				if (!curr || curr->value == HEREDOC || curr->value == PIPE || curr->value == APPEND || curr->value == REDIRECTION_IN || curr->value == REDIRECTION_OUT) 
+                	return (ft_printf(2, "syntax error\n"), 1);
 			}
 		}
 		if(curr)

@@ -10,7 +10,7 @@ void execute_bins(t_execution **exec, char **env, t_env **env1 )
     int prev_pipe[2] = {0, 1};
     int curr_pipe[2];
     int flag = 0;
-    int tmp = 0;
+    // int tmp = 0;
     cmd_count = ft_cmd_count(curr);
     pids = malloc(sizeof(pid_t) * cmd_count);
     gc_add(0 , pids, NULL);
@@ -99,7 +99,7 @@ void execute_bins(t_execution **exec, char **env, t_env **env1 )
        waitpid(pids[i], &exit_status, 0);
     if(WIFEXITED(exit_status))
         exit_status = (char)WEXITSTATUS(exit_status);
-    tmp = exit_status;
+    // tmp = exit_status;
     if(tmp1 == 130)
         exit_status = tmp1;
 }

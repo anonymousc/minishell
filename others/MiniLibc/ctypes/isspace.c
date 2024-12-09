@@ -19,3 +19,9 @@ char *is_space_veta(char s)
 		return ("\r");
 	return NULL;
 }
+char is_space_delta(char s)
+{
+	if(s == ' ' || s == '\t' || s == '\n' || s == '\f' || s == '\r')
+		return (s);
+	return 0;
+}

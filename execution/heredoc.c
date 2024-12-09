@@ -41,10 +41,6 @@ static int file_to_write_on(char **filename)
     return fd;
 }
 
-static void delete_file(char *filename)
-{
-    unlink(filename);
-}
  char *expander_heredoc(char *expansion, t_env *envp)
 {
 	char *before_dollar;
@@ -93,6 +89,7 @@ void here_doc_child(t_token *final , int *fd1 ,t_env *env)
     char *filename = NULL;
     fd = file_to_write_on(&filename);
     char *delim = curr->next->data;
+    printf("delim is == %s\n", delim);
     int check = check_in_db_or_sq(delim);
     if(check)
     {
@@ -111,6 +108,8 @@ void here_doc_child(t_token *final , int *fd1 ,t_env *env)
                 ft_printf(2, "warning: here-doc delimited by end-of-file\n");
                 break;
             }
+            if (!ft_strncmp(delim, line, ft_strlen(delim) + 1))
+                break;
             if(check == 0 && ft_strchr(line, '$'))
             {
                 char *before_dollar = before_dollar_word(line);
@@ -122,8 +121,6 @@ void here_doc_child(t_token *final , int *fd1 ,t_env *env)
                     gc_add(0 , line , NULL);
                 }
             }
-            if (!ft_strncmp(delim, line, ft_strlen(delim) + 1))
-                break;
             ft_printf(fd, "%s\n", line);
             gc_add(0 , line , NULL);
         }
@@ -134,7 +131,6 @@ void here_doc_child(t_token *final , int *fd1 ,t_env *env)
         exit_status = WEXITSTATUS(exit_status);
     close(fd);
     fd = open(filename, O_RDONLY);
-    delete_file(filename);
     *fd1 = fd;
 }
 

@@ -12,6 +12,7 @@ char **env_to_arr2(t_env *env)
 {
     int size = env_size(env);
     char **envir = malloc(sizeof(char *) * (size + 1));
+    // gc_add_double(0 , (void **)envir, NULL);
     if (!envir)
         return NULL;
 
@@ -271,7 +272,7 @@ int my_export(t_execution *exec , t_env **env, int fd, int fda)
     if (!exec->cmd[1])
     {
         char **env_array = env_to_arr2(*env);
-        gc_add_double(0 , (void **)env_array,NULL);
+        // gc_add_double(0 , (void **)env_array,NULL);
         sort_strings(env_array, env_size(*env));
         
         i = 0;
@@ -285,8 +286,7 @@ int my_export(t_execution *exec , t_env **env, int fd, int fda)
             if(fda == 1)
                 ft_printf(fd, "declare -x %s\n", env_array[i]);
             else
-                ft_printf(fda, "declare -x %s=\"%s\"\n", env_array[i] , ft_strchr(*env_array, '=') + 1);
-            free(env_array[i]);
+                ft_printf(fda, "declare -x %s\n", env_array[i]);
             i++;
         }
         return 0;

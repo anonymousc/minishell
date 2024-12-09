@@ -104,6 +104,7 @@ int		ft_isascii(int c);
 int		is_space(char c);
 int		ft_isdigit(int c);
 char	*is_space_veta(char s);
+char	is_space_delta(char s);
 
 //////////////////////////////
 

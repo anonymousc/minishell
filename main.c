@@ -55,7 +55,7 @@ int main (int ac, char **av, char **envp)
 		if(!data || parsing(&env, data))
 			continue;
 		my_export(NULL, &env, 0, 0);
-		execution( data, envp, &env);
+		execution(data , envp, &env);
 		
 	}
 }

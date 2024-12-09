@@ -2,21 +2,22 @@
 
 void free_spaces2(t_token **head)
 {
-    t_token* current = *head;
+    t_token* current;
     t_token* tmp;
+    t_token* prev;
 
+    current = *head;
     while (current) 
 	{
         if (current->value == WHITESPACE) 
 		{
             tmp = current;
             current = current->next;
-
             if (tmp == *head) 
                 *head = current;
 			else 
 			{
-                t_token* prev = *head;
+                prev = *head;
                 while (prev && prev->next != tmp) 
                     prev = prev->next;
                 if (prev) 

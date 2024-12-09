@@ -39,8 +39,6 @@ int my_cd(t_execution *exec , t_env *env)
 {
     char old_pwd[4096];
 
-    if(!(*exec->cmd[1]))//to enhance
-        chdir(find_env_variable2(env, "#PWD"));
     if (!exec->cmd[1])
     {
         if (chdir(find_env_variable2(env, "HOME")) != 0)
@@ -48,6 +46,11 @@ int my_cd(t_execution *exec , t_env *env)
         update_oldpwd (env, find_env_variable2(env, "#PWD"));
         update_pwd(env);
         return 1;
+    }
+    if(!(*exec->cmd[1]))
+    {
+        chdir(find_env_variable2(env, "#PWD"));
+        return 0;
     }
     if (getcwd(old_pwd, sizeof(old_pwd)) == NULL)
     {

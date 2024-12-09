@@ -15,10 +15,7 @@ char  *retline(void)
 		{
 			line = check_syntax(line);
 			if(!line)
-			{
 				exit_status = 2;	
-				free(line);
-			}
 		}
 		return line;
 }
