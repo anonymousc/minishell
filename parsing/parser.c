@@ -166,9 +166,32 @@ static void handle_heredoc(int *fd_heredoc,t_token **curr , t_env *env)
 static void  handle_redirs(int *fds, t_token **curr,t_env *env)
 {
     if ((*curr)->value == REDIRECTION_IN)
-            fds[1] = handle_input_redirection(curr, &fds[0], &fds[2]);
+    {
+            if(ft_strchr((*curr)->next->data , '$'))
+            {
+                printf("%s == s\n", ft_strchr((*curr)->next->data , '$'));
+                char *data = before_dollar_word((*curr)->next->data);
+                (*curr)->next->data = ft_strjoin2(data , expander(ft_strchr((*curr)->next->data , '$') , env));
+                gc_add(0, (*curr)->next->data, NULL);
+                if(ft_strchr((*curr)->next->data , ' ') || ft_strchr((*curr)->next->data , '\0'))
+                    fds[1] = -3;
+            }
+            if(fds[1] != -3)
+                fds[1] = handle_input_redirection(curr, &fds[0], &fds[2]);
+    }
     else if ((*curr)->value == REDIRECTION_OUT && !fds[5])
-        fds[0] = handle_output_redirection(curr, &fds[4], &fds[5]);
+    {
+        if(ft_strchr((*curr)->next->data , '$'))
+        {
+            char *data = before_dollar_word((*curr)->next->data);
+            (*curr)->next->data = ft_strjoin2(data , expander(ft_strchr((*curr)->next->data , '$') , env));
+            gc_add(0, (*curr)->next->data, NULL);
+            if(ft_strchr((*curr)->next->data , ' ') || ft_strchr((*curr)->next->data , '\0'))
+                fds[0] = -3;
+        }
+        if(fds[0] != -3)
+            fds[0] = handle_output_redirection(curr, &fds[4], &fds[5]);
+    }
     else if ((*curr)->value == HEREDOC)
         handle_heredoc(&fds[3] , curr , env);   
     else if ((*curr)->value == APPEND)
