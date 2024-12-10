@@ -19,7 +19,7 @@ OBJ = $(SRC:%.c=%.o)
 
 all : $(NAME)
 
-$(NAME) : $(OBJ)
+$(NAME) : $(OBJ) $(SRC)
 	$(CC) $(CFLAGS) $(OBJ) -lreadline -I./others/ft_printf/  -o $(NAME)
 clean :
 	@rm -rf $(OBJ) 

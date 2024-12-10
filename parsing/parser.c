@@ -142,55 +142,66 @@ static int handle_output_redirection(t_token **curr, int *fflag, int *dflag)
     }
     return fd_out;
 }
-
+static void handle_append (int *fd_out, int *fd_append,int *fflag,  t_token **curr)
+{
+    if ((*curr)->next && (*curr)->next->data)
+    {
+        if(*fd_out != 1 || *fd_append == 1)
+            *fd_out = open((*curr)->next->data, O_CREAT | O_RDWR | O_APPEND, 0666);
+        else
+            *fd_append = open((*curr)->next->data, O_CREAT | O_RDWR | O_APPEND, 0666);
+        if (access((*curr)->next->data, R_OK | W_OK) == -1)
+           *fflag = 1;
+        *curr = (*curr)->next;
+    }
+}
+static void handle_heredoc(int *fd_heredoc,t_token **curr , t_env *env)
+{
+    if ((*curr)->next && (*curr)->next->data)
+    {
+        *fd_heredoc = here_doc(curr, env);
+        *curr = (*curr)->next;
+    }
+}
+static void  handle_redirs(int *fds, t_token **curr,t_env *env)
+{
+    if ((*curr)->value == REDIRECTION_IN)
+            fds[1] = handle_input_redirection(curr, &fds[0], &fds[2]);
+    else if ((*curr)->value == REDIRECTION_OUT && !fds[5])
+        fds[0] = handle_output_redirection(curr, &fds[4], &fds[5]);
+    else if ((*curr)->value == HEREDOC)
+        handle_heredoc(&fds[3] , curr , env);   
+    else if ((*curr)->value == APPEND)
+        handle_append(&fds[0], &fds[2], &fds[4] , curr);
+}
+int if_redir(t_token **curr)
+{
+    return ((*curr)->value == REDIRECTION_IN || \
+    (*curr)->value == REDIRECTION_OUT || \
+    (*curr)->value == APPEND);
+}
 static t_execution *process_command_tokens(t_token **curr, t_env *env)
 {
-    int word_count = count_words1(*curr);
-    if (word_count == 0)
-        return NULL;
+    int word_count;
     char **cmd;
     int *fds;
     int i;
     int cmdlen;
 
+    word_count = count_words1(*curr);
+    if (word_count == 0)
+        return NULL;
     fds = NULL;
     cmd = init_cmd_array(word_count);
     gc_add_double(0 , (void **)cmd, NULL);
     (void)(i = 0 ,cmdlen = word_count, fds = init_fds(fds));
     while (*curr && (*curr)->value != PIPE)
     {
-        if (!(*curr)->data)
-        {
-            *curr = (*curr)->next;
-            continue;
-        }
-        if ((*curr)->value == REDIRECTION_IN)
-            fds[1] = handle_input_redirection(curr, &fds[0], &fds[2]);
-        else if ((*curr)->value == REDIRECTION_OUT && !fds[5])
-            fds[0] = handle_output_redirection(curr, &fds[4], &fds[5]);
-        else if ((*curr)->value == HEREDOC)
-        {
-            if ((*curr)->next && (*curr)->next->data)
-                (void)(fds[3] = here_doc(curr, env), *curr = (*curr)->next);
-                
-        }
-        else if ((*curr)->value == APPEND)
-        {
-            if ((*curr)->next && (*curr)->next->data)
-            {
-                if(fds[0] != 1 || fds[2] == 1)
-                    fds[0] = open((*curr)->next->data, O_CREAT | O_RDWR | O_APPEND, 0666);
-                else
-                    fds[2] = open((*curr)->next->data, O_CREAT | O_RDWR | O_APPEND, 0666);
-                if (access((*curr)->next->data, R_OK | W_OK) == -1)
-                    fds[4] = 1;
-                *curr = (*curr)->next;
-            }
-        }
+        if (if_redir(curr))
+            handle_redirs(fds , curr , env);
         else if ((*curr)->value == WORD && i < word_count)
         {
-            cmd[i] = ft_strdup((*curr)->data);
-            gc_add(0 , cmd[i], NULL);
+            (void)(cmd[i] = ft_strdup((*curr)->data) ,gc_add(0 , cmd[i], NULL));
             i++;
         }
         *curr = (*curr)->next;
@@ -200,12 +211,14 @@ static t_execution *process_command_tokens(t_token **curr, t_env *env)
 
 void for_execute(t_token **final, t_execution **data, t_env *env)
 {
-    t_token *curr = *final;
-    *data = NULL;
+    t_token *curr;
+    t_execution *new_cmd;
 
+    *data = NULL;
+    curr = *final;
     while (curr)
     {
-        t_execution *new_cmd = process_command_tokens(&curr, env);
+        new_cmd = process_command_tokens(&curr, env);
         gc_add(0 ,new_cmd , NULL);
         if (new_cmd)
         {

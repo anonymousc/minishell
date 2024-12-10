@@ -394,6 +394,14 @@ static void	expand_token(t_token **final, t_token **curr, t_token *prev, t_env *
 	}
 }
 
+int if_redir_data(t_token *curr)
+{
+	return (curr->value == HEREDOC \
+	|| curr->value == REDIRECTION_IN \
+	|| curr->value == REDIRECTION_OUT \
+	|| curr->value == APPEND);
+}
+
 void	expander_final(t_token **final, t_env *env)
 {
 	t_token	*curr;
@@ -403,8 +411,13 @@ void	expander_final(t_token **final, t_env *env)
 	prev = NULL;
 	while (curr)
 	{
-		if (curr->value == HEREDOC)
-			curr = curr->next->next;
+		if (if_redir_data(curr) && curr->next)
+		{
+			if(curr->next->next)
+				curr = curr->next->next;
+			else
+				curr = curr->next;
+		}
 		else if (curr->value == WORD)
 		{
 			if (check_in_db_or_sq(curr->data) == 2)

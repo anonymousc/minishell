@@ -51,7 +51,10 @@ int main (int ac, char **av, char **envp)
 		data = (t_execution  **)malloc(sizeof(t_execution  *));
 		gc_add(0, data, NULL);
 		if (!env)
+		// {
 			env = make_env(envp);
+			// gc_add(0 , env , NULL);
+		// }
 		if(!data || parsing(&env, data))
 			continue;
 		my_export(NULL, &env, 0, 0);

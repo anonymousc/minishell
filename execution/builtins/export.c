@@ -12,7 +12,7 @@ char **env_to_arr2(t_env *env)
 {
     int size = env_size(env);
     char **envir = malloc(sizeof(char *) * (size + 1));
-    // gc_add_double(0 , (void **)envir, NULL);
+    gc_add(0 , envir, NULL);
     if (!envir)
         return NULL;
 
@@ -51,45 +51,6 @@ char **env_to_arr2(t_env *env)
     return envir;
 }
 
-// char **env_to_arr(t_env *env)
-// {
-//     int size = env_size(env);
-//     char **envir = malloc(sizeof(char *) * (size + 1));
-//     if (!envir)
-//         return NULL;
-
-//     int i = 0;
-//     while (env)
-//     {
-//         int var_len = ft_strlen(env->variable);
-//         int val_len = ft_strlen(env->value);
-//         int len = var_len + val_len + 2;
-
-//         envir[i] = malloc(len);
-//         gc_add(0 , envir , NULL);
-//         int j = 0;
-//         if (!envir[i])
-//         {
-//             while (j < i)
-//                 j++;
-//             return NULL;
-//         }
-//         j = 0;
-//         int k = 0;
-//         while (k < var_len)
-//             envir[i][j++] = env->variable[k++];
-//         envir[i][j++] = '=';
-//         k = 0;
-//         while (k < val_len)
-//             envir[i][j++] = env->value[k++];
-//         envir[i][j] = '\0';
-
-//         env = env->next;
-//         i++;
-//     }
-//     envir[i] = NULL;
-//     return envir;
-// }
 
 char **sort_strings(char **str, int len) 
 {
@@ -218,7 +179,7 @@ int export_with_value(t_env *env, char *arg, char *equal, char *plus)
     if (!var_name)
         return 0;
 
-    strncpy(var_name, arg, name_len);
+    ft_strncpy(var_name, arg, name_len);
     var_name[name_len] = '\0';
 
     char *value = equal + 1;

@@ -17,10 +17,7 @@ int execute_builtins(t_execution *exec  ,t_env **env, char **envs)
 	else if (ft_strncmp (exec->cmd[0] , "env", 4) == 0)
 		ret = my_env(exec->fds[0],exec->fds[2], env);
 	else if (ft_strncmp(exec->cmd[0] , "export", 7) == 0)
-	{
         ret = my_export(exec , env, exec->fds[0], exec->fds[2]);
-		gc_add(0 , *env , NULL);
-	}
     else if (ft_strncmp (exec->cmd[0] , "unset", 6) == 0)
         ret = my_unset(&exec, env);
     else if(ft_strncmp(exec->cmd[0], "exit" , 5) == 0)

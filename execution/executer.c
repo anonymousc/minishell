@@ -16,10 +16,10 @@ void execute_bins(t_execution **exec, char **env, t_env **env1 )
     gc_add(0 , pids, NULL);
     while (curr && i < cmd_count)
     {
-        if (i < cmd_count - 1)
-            pipe(curr_pipe);
         if (cmd_count == 1 && check_builtins(curr))
             return (exit_status = execute_builtins(curr, env1, env), env = env_to_arr2(*env1) , gc_add(0 , env , NULL), (void)0);
+        if (i < cmd_count - 1)
+            pipe(curr_pipe);
         pids[i] = fork();
         signal(SIGQUIT , sig_handler1);
         signal(SIGINT, sigfork);
@@ -43,7 +43,6 @@ void execute_bins(t_execution **exec, char **env, t_env **env1 )
             if (curr->cmd[0] == NULL)
                 return (exit_minishell(1) ,(void)0);
             env = env_to_arr2(*env1);
-            gc_add(0 , env, NULL);
             if (cmd_count > 1 && check_builtins(curr))
             {
                 if (flag == 1)
