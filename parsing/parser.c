@@ -100,14 +100,23 @@ static int *init_fds(int *array)
     return array;
 }
 
-static int handle_input_redirection(t_token **curr, int *fd_out, int *fd_append)
+static int handle_input_redirection(t_token **curr, int *fd_out, int *fd_append, t_env *env)
 {
     int fd_in;
 
     fd_in = 0;
     if ((*curr)->next && (*curr)->next->data)
     {
-        fd_in = open((*curr)->next->data, O_RDONLY, 0444);
+        if(ft_strchr((*curr)->next->data , '$'))
+        {
+            (*curr)->next->data = ft_strjoin2(before_dollar_word((*curr)->next->data) 
+           , expander(ft_strchr((*curr)->next->data , '$') , env));
+            gc_add(0, (*curr)->next->data, NULL);
+            if(ft_strchr((*curr)->next->data , ' ') || !(*curr)->next->data)
+                fd_in = -3;
+        }
+        if(fd_in != -3)
+            fd_in = open((*curr)->next->data, O_RDONLY, 0444);
         if (fd_in == -1)
         {
             *fd_out = -1;
@@ -142,13 +151,21 @@ static int handle_output_redirection(t_token **curr, int *fflag, int *dflag)
     }
     return fd_out;
 }
-static void handle_append (int *fd_out, int *fd_append,int *fflag,  t_token **curr)
+static void handle_append (int *fd_out, int *fd_append,int *fflag,  t_token **curr ,t_env *env)
 {
     if ((*curr)->next && (*curr)->next->data)
     {
-        if(*fd_out != 1 || *fd_append == 1)
+        if(ft_strchr((*curr)->next->data , '$'))
+        {
+            char *data = before_dollar_word((*curr)->next->data);
+            (*curr)->next->data = ft_strjoin2(data , expander(ft_strchr((*curr)->next->data , '$') , env));
+            gc_add(0, (*curr)->next->data, NULL);
+            if(ft_strchr((*curr)->next->data , ' ') || !(*curr)->next->data)
+                *fd_append = -3;
+        }
+        if(*fd_out != 1 || *fd_append == 1 || *fd_append != -3)
             *fd_out = open((*curr)->next->data, O_CREAT | O_RDWR | O_APPEND, 0666);
-        else
+        else if(*fd_append != -3)
             *fd_append = open((*curr)->next->data, O_CREAT | O_RDWR | O_APPEND, 0666);
         if (access((*curr)->next->data, R_OK | W_OK) == -1)
            *fflag = 1;
@@ -160,33 +177,21 @@ static void handle_heredoc(int *fd_heredoc,t_token **curr , t_env *env)
     if ((*curr)->next && (*curr)->next->data)
     {
         *fd_heredoc = here_doc(curr, env);
-        *curr = (*curr)->next;
+        *curr = (*curr)->next; 
     }
 }
 static void  handle_redirs(int *fds, t_token **curr,t_env *env)
 {
     if ((*curr)->value == REDIRECTION_IN)
-    {
-            if(ft_strchr((*curr)->next->data , '$'))
-            {
-                printf("%s == s\n", ft_strchr((*curr)->next->data , '$'));
-                char *data = before_dollar_word((*curr)->next->data);
-                (*curr)->next->data = ft_strjoin2(data , expander(ft_strchr((*curr)->next->data , '$') , env));
-                gc_add(0, (*curr)->next->data, NULL);
-                if(ft_strchr((*curr)->next->data , ' ') || ft_strchr((*curr)->next->data , '\0'))
-                    fds[1] = -3;
-            }
-            if(fds[1] != -3)
-                fds[1] = handle_input_redirection(curr, &fds[0], &fds[2]);
-    }
+        fds[1] = handle_input_redirection(curr, &fds[0], &fds[2] , env);
     else if ((*curr)->value == REDIRECTION_OUT && !fds[5])
     {
         if(ft_strchr((*curr)->next->data , '$'))
         {
-            char *data = before_dollar_word((*curr)->next->data);
-            (*curr)->next->data = ft_strjoin2(data , expander(ft_strchr((*curr)->next->data , '$') , env));
+            (*curr)->next->data = ft_strjoin2(before_dollar_word((*curr)->next->data)
+            , expander(ft_strchr((*curr)->next->data , '$') , env));
             gc_add(0, (*curr)->next->data, NULL);
-            if(ft_strchr((*curr)->next->data , ' ') || ft_strchr((*curr)->next->data , '\0'))
+            if(ft_strchr((*curr)->next->data , ' ') || !(*curr)->next->data)
                 fds[0] = -3;
         }
         if(fds[0] != -3)
@@ -195,13 +200,13 @@ static void  handle_redirs(int *fds, t_token **curr,t_env *env)
     else if ((*curr)->value == HEREDOC)
         handle_heredoc(&fds[3] , curr , env);   
     else if ((*curr)->value == APPEND)
-        handle_append(&fds[0], &fds[2], &fds[4] , curr);
+        handle_append(&fds[0], &fds[2], &fds[4] , curr , env);
 }
 int if_redir(t_token **curr)
 {
     return ((*curr)->value == REDIRECTION_IN || \
     (*curr)->value == REDIRECTION_OUT || \
-    (*curr)->value == APPEND);
+    (*curr)->value == APPEND || (*curr)->value == HEREDOC);
 }
 static t_execution *process_command_tokens(t_token **curr, t_env *env)
 {

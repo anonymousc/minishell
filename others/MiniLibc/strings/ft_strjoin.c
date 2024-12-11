@@ -11,7 +11,7 @@ char	*ft_strjoin(char *s, char *s1)
 		return (NULL);
 	p = (char *)malloc(ft_strlen(s) + ft_strlen(s1) + 1);
 	if (!p)
-		return (free(s), NULL);
+		return (NULL);
 	p[ft_strlen(s) + ft_strlen(s1)] = '\0';
 	str = p;
 	if (s)

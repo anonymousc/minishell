@@ -23,7 +23,7 @@ char *check_quotes(char *s)
 char *check_syntax(char *s)
 {
 	if(!check_quotes(s))
-		return (free(s), NULL);
+		return (NULL);
 	return (s);
 }
 

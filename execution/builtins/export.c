@@ -166,28 +166,23 @@ int handle_existing_var(t_env *env, char *var_name, char *value, int is_append)
 
 int export_with_value(t_env *env, char *arg, char *equal, char *plus)
 {
-    int is_append = (plus && plus + 1 == equal);
+    int is_append;
     int name_len;
+    char *var_name;
+    char *value;
 
+    is_append = (plus && plus + 1 == equal);
     if (is_append)
         name_len = plus - arg;
     else
         name_len = equal - arg;
-
-    char *var_name = malloc(name_len + 1);
+    var_name = malloc(name_len + 1);
     gc_add(0 , var_name , NULL);
-    if (!var_name)
-        return 0;
-
     ft_strncpy(var_name, arg, name_len);
     var_name[name_len] = '\0';
-
-    char *value = equal + 1;
+    value = equal + 1;
     if (!handle_existing_var(env, var_name, value, is_append))
-    {
-        free(var_name);
         return 0;
-    }
     return 1;
 }
 
@@ -201,7 +196,6 @@ int export_without_value(t_env *env, char *arg)
         new_var = creat_env_var(arg, "");
         if (!new_var)
             return 0;
-
         add_back(&(env), new_var);
     }
     return 1;
@@ -217,7 +211,24 @@ int process_export_arg(t_env *env, char *arg)
     else
         return export_with_value(env, arg, equal, plus);
 }
-
+char *stop_after_delim(char *s, char spec)
+{
+    int i = 0;
+    while(s[i] != spec)
+    {
+        i++;
+    }
+    char *data = malloc(i + 1);
+    gc_add(0 ,data , NULL);
+    i = 0;
+    while(s[i] != spec)
+    {
+        data[i] = s[i];
+        i++;
+    }
+    data[i] = '\0';
+    return data;
+}
 int my_export(t_execution *exec , t_env **env, int fd, int fda)
 {
     int i = 1;
@@ -233,7 +244,6 @@ int my_export(t_execution *exec , t_env **env, int fd, int fda)
     if (!exec->cmd[1])
     {
         char **env_array = env_to_arr2(*env);
-        // gc_add_double(0 , (void **)env_array,NULL);
         sort_strings(env_array, env_size(*env));
         
         i = 0;
@@ -245,7 +255,7 @@ int my_export(t_execution *exec , t_env **env, int fd, int fda)
                 continue;
             }
             if(fda == 1)
-                ft_printf(fd, "declare -x %s\n", env_array[i]);
+                ft_printf(fd, "declare -x %s=\"%s\"\n", stop_after_delim(env_array[i], '='), ft_strchr(env_array[i] , '=') + 1);
             else
                 ft_printf(fda, "declare -x %s\n", env_array[i]);
             i++;

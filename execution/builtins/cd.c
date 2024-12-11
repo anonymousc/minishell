@@ -14,10 +14,11 @@ static t_env *find_variable(t_env *env, char *variable_name)
 static void update_env_value(t_env *env, char *variable_name, char *new_value)
 {
     t_env *var = find_variable(env, variable_name);
-
     if (var)
-           var->value = strdup(new_value);
-    gc_add(0, var->value, NULL);
+           var->value = ft_strdup(new_value);
+    else
+        return ;
+    gc_add(0 , var->value, NULL);
 }
 
 static void update_oldpwd(t_env *env, char *old_pwd)

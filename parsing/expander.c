@@ -46,7 +46,7 @@ char *find_env_variable2 (t_env *env, char *varname)
         }
         env = env->next;
     }
-    return (NULL);
+    return ("");
 }
 
 char *handle_exit_status(char *tmp, t_env *envp)
@@ -172,6 +172,7 @@ t_token *make_token_list2(char **split)
 	while (split && split[i])
 	{
 		new_token = malloc (sizeof(t_token));
+		gc_add(0, new_token, NULL);
 		new_token->data = ft_strdup(split[i]);
 		gc_add(0, new_token->data, NULL);
 		new_token->value = get_token(split[i]);
@@ -205,7 +206,7 @@ void extra_sanitize(t_token **head)
 
     while (current && current->next) 
 	{
-        if (current->value == WORD && !(*current->data)) 
+        if (current->value == WORD && !(*current->data) && current->next->value == WORD) 
 		{
             tmp = current;
             current = current->next;

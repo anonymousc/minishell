@@ -20,6 +20,11 @@ static int handle_append_redirection(t_execution **exec , int *flag)
 {
     if ((*exec)->fds[2] != 1)
     {
+        if((*exec)->fds[2] == -3)
+        {
+            ft_printf(2 , "minishell: ambiguous redirect\n");
+            return -1;
+        }
         if ((*exec)->fds[4] == 1)
             return (ft_printf(2, "permission denied\n"), -1);
         *flag = 1;
@@ -62,8 +67,6 @@ int redirect_io(t_execution **exec, int *flag)
 {
     if ((*exec)->fds[5] == 1)
         return (ft_printf(2, "this is a directory\n"), -1);
-    if ((*exec)->fds[4] == 3)
-        return (ft_printf(2, "ambigous redirection\n"), -1);
     if ((*exec)->fds[4] == 2)
         return (ft_printf(2, "no such a file or directory\n"), -1);
     if (handle_output_redirection(exec, flag) == -1)

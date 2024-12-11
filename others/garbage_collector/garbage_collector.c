@@ -94,33 +94,6 @@ void gc_add_double(int mem_group_id, void **mem, t_memref **store_memref)
 	gc_add(mem_group_id, mem, store_memref);
 }
 
-void	*gc_calloc(int mem_group_id, size_t count, size_t size,
-		t_memref **store_memref)
-{
-	void	*mem;
-
-	if (count != 0 && ULONG_MAX / count < size)
-	{
-		return (NULL);
-	}
-	mem = malloc(count * size);
-	if (!mem)
-		exit_minishell(12); 
-	ft_bzero(mem, count * size);
-	gc_add(mem_group_id, mem, store_memref);
-	return (mem);
-}
-
-void	*gc_malloc(int mem_group_id, size_t size, t_memref **store_memref)
-{
-	void	*mem;
-
-	mem = malloc(size);
-	if (!mem)
-		exit_minishell(12);
-	gc_add(mem_group_id, mem, store_memref);
-	return (mem);
-}
 void	gc_free_memrefs(t_memref *mem_ref)
 {
 	t_memref	*tmp;

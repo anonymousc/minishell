@@ -16,12 +16,12 @@ int parsing(t_env **env ,t_execution **data)
 		return 1;
 	line = split_to_lex(readline);
 	tokenization(line , final);
-	gc_add_double(0 , (void **)line, NULL);
+	// gc_add_double(0 , (void **)line, NULL);
 	sanitizer(final);
-	expander_final(final , *env);
-	process_quotes(final);
 	if (check_syntax_extended(final))
 		return (exit_status = 2, 1);
+	expander_final(final , *env);
+	process_quotes(final);
 	free_spaces2(final);
 	for_execute(final , data , *env);
 	return 0;
@@ -51,10 +51,7 @@ int main (int ac, char **av, char **envp)
 		data = (t_execution  **)malloc(sizeof(t_execution  *));
 		gc_add(0, data, NULL);
 		if (!env)
-		// {
 			env = make_env(envp);
-			// gc_add(0 , env , NULL);
-		// }
 		if(!data || parsing(&env, data))
 			continue;
 		my_export(NULL, &env, 0, 0);

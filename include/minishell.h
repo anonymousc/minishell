@@ -46,9 +46,11 @@ typedef struct s_memgroup
 
 typedef struct	s_syntax
 {
-	int s_q;
-	int d_q;
+	int flag;
+	int cmd_count;
 	int iter;
+	int	curr_pipe[2];
+
 }				t_syntax;
 
 typedef struct s_env
@@ -232,7 +234,7 @@ char **env_to_arr2(t_env *env);
 void execute_bins(t_execution **exec, char **env, t_env **env1 );
 ///HEREDOC
 
-void here_doc_child(t_token *final , int *fd1 ,t_env *env);
+void here_doc_child(char *delim, int *fd1 ,t_env *env);
 int here_doc(t_token **final ,t_env *env);
 
 //////////
@@ -261,8 +263,6 @@ t_memgroup				*gc_get_specific_memgroup(int id);
 t_memref				**gc_get_memrefs(int id);
 void					gc_free_memrefs(t_memref *mem_ref);
 void					gc_free_specific_memref(t_memref **mem_ref_head ,t_memref *mem_ref_to_free);
-void					*gc_calloc(int mem_group_id, size_t count, size_t size ,t_memref **store_memref);
-void					*gc_malloc(int mem_group_id, size_t size ,t_memref **store_memref);
 void					gc_add(int mem_group_id, void *mem ,t_memref **store_memref);
 void					gc_add_double(int mem_group_id, void **mem,t_memref **store_memref);
 void					gc_free_memgrp(int mem_group_id);

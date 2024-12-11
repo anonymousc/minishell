@@ -29,6 +29,8 @@ char *find_path(char *cmd, char **env)
     char **paths = NULL;
     char *path_var = NULL;
     if(!cmd)
+        return "";
+    if(!*cmd)
         return NULL;
     if ((ft_strchr(cmd , '/') || ft_strchr(cmd , '.')))
     {

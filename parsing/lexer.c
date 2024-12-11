@@ -44,7 +44,9 @@ Token get_token (char *str)
 		return (REDIRECTION_OUT);
 	else if(ft_strnstr(str, "<" , 1))
 		return(REDIRECTION_IN);
-	else if(ft_strnstr(str , " " , 1) || ft_strnstr(str , "\n" , 1) || ft_strnstr(str , "\v" , 1) || ft_strnstr(str , "\t" , 1) || ft_strnstr(str , "\r" , 1))
+	else if(ft_strnstr(str , " " , 1) || ft_strnstr(str , "\n" , 1) 
+	|| ft_strnstr(str , "\v" , 1) || ft_strnstr(str , "\t" , 1) 
+	|| ft_strnstr(str , "\r" , 1))
 		return (WHITESPACE);
 	return WORD;
 }
@@ -133,6 +135,7 @@ static char *qoutes_detailer(char *s , char **str , int *i)
 {
 	char q = *s;
 	str[(*i)] = ft_substr(s,0,quotes_cout_word(s + 1,q) + 2);
+	gc_add(0 ,str[(*i)], NULL);
 	s += quotes_cout_word(s + 1,q) + 2;
 	(*i)++;
 	return s;
@@ -149,6 +152,7 @@ static char *skip_checker(char *s, int *len)
 static char *isnt_asep(char **str , int *i, int *len, char *start)
 {
 	str[(*i)] = (char *)malloc(((*len) + 1) * sizeof(char));
+	// gc_add(0 , str , NULL);
 	ft_memcpy(str[(*i)], start, (*len));
 	str[(*i)][(*len)] = '\0';
 	return (str[(*i)]);
