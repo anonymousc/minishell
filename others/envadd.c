@@ -27,11 +27,11 @@ t_env *lstnew_env(char *variable , char *value)
 {
     t_env *env;
     env = malloc(sizeof(t_env));
-    gc_add(0 , env, NULL);
+    gc_add(0 , env);
     env->variable = variable;
-    gc_add(0 , env->variable, NULL);
+    gc_add(0 , env->variable);
     env->value = value;
-    gc_add(0 , env->value, NULL);
+    gc_add(0 , env->value);
     env->next = NULL;
     return (env);
 }

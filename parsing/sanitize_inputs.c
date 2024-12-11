@@ -40,7 +40,7 @@ void sanitizer(t_token **fill_line)
 		{
 			tmp = data->next;
             (data)->data = ft_strjoin((data)->data, (data)->next->data);
-            gc_add(0 , data->data, NULL);
+            gc_add(0 , data->data);
             (data)->next = (data)->next->next;
         } 
 		else 

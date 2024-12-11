@@ -86,7 +86,7 @@ static int *init_fds(int *array)
 
     i = 0;
     array = malloc(sizeof(int) * 7);
-    gc_add(0 , array, NULL);
+    gc_add(0 , array);
     if(!array)
         return NULL;
     while (i < 7)
@@ -111,7 +111,7 @@ static int handle_input_redirection(t_token **curr, int *fd_out, int *fd_append,
         {
             (*curr)->next->data = ft_strjoin2(before_dollar_word((*curr)->next->data) 
            , expander(ft_strchr((*curr)->next->data , '$') , env));
-            gc_add(0, (*curr)->next->data, NULL);
+            gc_add(0, (*curr)->next->data);
             if(ft_strchr((*curr)->next->data , ' ') || !(*curr)->next->data)
                 fd_in = -3;
         }
@@ -159,7 +159,7 @@ static void handle_append (int *fd_out, int *fd_append,int *fflag,  t_token **cu
         {
             char *data = before_dollar_word((*curr)->next->data);
             (*curr)->next->data = ft_strjoin2(data , expander(ft_strchr((*curr)->next->data , '$') , env));
-            gc_add(0, (*curr)->next->data, NULL);
+            gc_add(0, (*curr)->next->data);
             if(ft_strchr((*curr)->next->data , ' ') || !(*curr)->next->data)
                 *fd_append = -3;
         }
@@ -190,7 +190,7 @@ static void  handle_redirs(int *fds, t_token **curr,t_env *env)
         {
             (*curr)->next->data = ft_strjoin2(before_dollar_word((*curr)->next->data)
             , expander(ft_strchr((*curr)->next->data , '$') , env));
-            gc_add(0, (*curr)->next->data, NULL);
+            gc_add(0, (*curr)->next->data);
             if(ft_strchr((*curr)->next->data , ' ') || !(*curr)->next->data)
                 fds[0] = -3;
         }
@@ -221,7 +221,7 @@ static t_execution *process_command_tokens(t_token **curr, t_env *env)
         return NULL;
     fds = NULL;
     cmd = init_cmd_array(word_count);
-    gc_add_double(0 , (void **)cmd, NULL);
+    gc_add_double(0 , (void **)cmd);
     (void)(i = 0 ,cmdlen = word_count, fds = init_fds(fds));
     while (*curr && (*curr)->value != PIPE)
     {
@@ -229,7 +229,7 @@ static t_execution *process_command_tokens(t_token **curr, t_env *env)
             handle_redirs(fds , curr , env);
         else if ((*curr)->value == WORD && i < word_count)
         {
-            (void)(cmd[i] = ft_strdup((*curr)->data) ,gc_add(0 , cmd[i], NULL));
+            (void)(cmd[i] = ft_strdup((*curr)->data) ,gc_add(0 , cmd[i]));
             i++;
         }
         *curr = (*curr)->next;
@@ -247,7 +247,7 @@ void for_execute(t_token **final, t_execution **data, t_env *env)
     while (curr)
     {
         new_cmd = process_command_tokens(&curr, env);
-        gc_add(0 ,new_cmd , NULL);
+        gc_add(0 ,new_cmd);
         if (new_cmd)
         {
             if (!*data)

@@ -5,9 +5,9 @@ static char *namegen()
     int fd = open("/dev/random" , O_RDONLY);
     int i = 0;
     char *file = malloc(11);
-    gc_add(0 , file, NULL);
+    gc_add(0 , file);
     char *buf = malloc (1);
-    gc_add(0 , buf, NULL);
+    gc_add(0 , buf);
     int j = 0;
     while (i < 10)
     {
@@ -37,7 +37,7 @@ static int file_to_write_on(char **filename)
     char *path = randgen(*filename);
     int fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0777);
     *filename = path;
-    gc_add(0 ,path, NULL);
+    gc_add(0 ,path);
     return fd;
 }
 
@@ -49,7 +49,7 @@ char *check_if_expandable(int *check , char *line , t_env *env)
         if(!line)
         {
             line = ft_strdup("");
-            gc_add(0 , line , NULL);
+            gc_add(0 , line);
         }
     }
     return (line);
@@ -71,7 +71,7 @@ void fork_herdoc(char *delim , int *fd , t_env *env , int *check)
                 break;
             line = check_if_expandable(check , line , env);
             ft_printf(*fd, "%s\n", line);
-            gc_add(0 , line , NULL);
+            gc_add(0 , line);
         }
         exit_minishell(0);
 }
@@ -87,7 +87,7 @@ void here_doc_child(char *delim , int *fd1 ,t_env *env)
     if(check)
     {
         delim = remove_quotes(delim);
-        gc_add(0,delim, NULL);
+        gc_add(0,delim);
     }
     filename = NULL;
     fd = file_to_write_on(&filename);

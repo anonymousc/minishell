@@ -24,7 +24,7 @@ void ft_execve(t_execution *curr ,char **env)
 
     if(check_builtins(curr))
         exit_minishell(0);
-    if(curr->cmd)
+    if(curr->cmd && curr->cmd[0])
     { 
         fullcmd = find_path(curr->cmd[0], env);
         struct stat data;
@@ -65,8 +65,8 @@ void wait_for_children(int *pids, int *cmd_count)
 }
 int prepare_child_process(int *i, int *cmd_count, int *curr_pipe)
 {
-    signal(SIGINT, sig_heredoc);
-    signal(SIGQUIT, SIG_DFL);
+    signal(SIGINT, sigfork);
+    signal(SIGQUIT, sig_handler1);
     if (*i < *cmd_count - 1)
         pipe(curr_pipe);
     return 0;
@@ -101,7 +101,7 @@ void execute_child_command(t_execution *curr, char **env, t_env **env1, int **ar
 
     prev_pipe = array[1];
     curr_pipe = array[2];
-    if (curr->cmd[0][0] == '\0')
+    if (curr->cmd[0] && curr->cmd[0][0] == '\0')
         exit_minishell(0);
     if (redirect_io(&curr, &data->flag) == -1)
         exit_minishell(1);
@@ -127,15 +127,15 @@ void exec_single_builtin(t_execution *curr , char **env , t_env **env1 , int *cm
 int **init_var_pipes(int **array, t_syntax *data)
 {
     array = malloc(sizeof(int *) * 3);
-    gc_add(0 ,array , NULL);
+    gc_add(0 ,array);
     array[0] = malloc(sizeof(pid_t) * data->cmd_count);
-    gc_add(0 , array[0], NULL);
+    gc_add(0 , array[0]);
     array[1] = malloc(sizeof(int)  * 2);
-    gc_add(0 , array[1], NULL);
+    gc_add(0 , array[1]);
     array[1][0] = 0;
     array[1][1] = 1;
     array[2] = malloc(sizeof(int)  * 2);
-    gc_add(0 , array[2], NULL);
+    gc_add(0 , array[2]);
     return array;
 }
 void execute_bins(t_execution **exec, char **env, t_env **env1)

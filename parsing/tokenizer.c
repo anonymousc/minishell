@@ -5,7 +5,7 @@ t_token	*ft_lstnew(char *content, Token t)
 	t_token  *list;
 
 	list = (t_token *) malloc (sizeof(t_token));
-	gc_add(0 , list,NULL);
+	gc_add(0 , list);
 	list->value = t;
 	list->data = content;
 	list->next = NULL;

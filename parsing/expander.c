@@ -56,13 +56,13 @@ char *handle_exit_status(char *tmp, t_env *envp)
 	char *ref;
 
 	exit = ft_itoa(exit_status);
-	gc_add(0, exit , NULL);
+	gc_add(0, exit);
 	before_dollar = before_dollar_word(tmp + 1);
-	gc_add(0 , before_dollar , NULL);
+	gc_add(0 , before_dollar);
 	exit = ft_strjoin2(exit, before_dollar);
 	ref = ft_strjoin2(exit, expander(tmp + ft_strlen(before_dollar) + 1, envp));
-	gc_add(0, exit , NULL);
-	gc_add(0, ref , NULL);
+	gc_add(0, exit);
+	gc_add(0, ref);
 	return (ref);
 }
 char *unexpandable_word(char **tmp , char *expanded_word)
@@ -70,11 +70,11 @@ char *unexpandable_word(char **tmp , char *expanded_word)
 	char *before_dollar;
 
 	before_dollar = before_dollar_word(*tmp);
-	gc_add(0 , before_dollar , NULL);
+	gc_add(0 , before_dollar);
 	while (**tmp && **tmp != '$')
 		(*tmp)++;
 	expanded_word = ft_strjoin2(expanded_word, before_dollar);
-	gc_add(0, expanded_word, NULL);
+	gc_add(0, expanded_word);
 	return (expanded_word);
 }
 char *copy_to_use(char *tmp,char *expansion , t_env *envp)
@@ -84,7 +84,7 @@ char *copy_to_use(char *tmp,char *expansion , t_env *envp)
 
 	len = tmp - expansion;
 	to_expand = malloc (len + 1);
-	gc_add(0 , to_expand, NULL);
+	gc_add(0 , to_expand);
 	ft_strncpy(to_expand, expansion, len);
 	to_expand[len] = '\0';
 	return (find_env_variable2(envp , to_expand));
@@ -112,7 +112,7 @@ char *expander(char *expansion, t_env *envp)
 	if (*tmp && *tmp != '$')
 		expanded_word = unexpandable_word(&tmp, expanded_word);
 	ref = ft_strjoin2(expanded_word, expander(tmp, envp));
-	gc_add(0 , ref , NULL);
+	gc_add(0 , ref );
 	return (ref);
 }
 
@@ -126,9 +126,9 @@ t_token *make_token_list(char **split)
 	while (split && split[i])
 	{
 		new_token = malloc (sizeof(t_token));
-		gc_add(0, new_token, NULL);
+		gc_add(0, new_token);
 		new_token->data = ft_strdup(split[i]);
-		gc_add(0, new_token->data, NULL);
+		gc_add(0, new_token->data);
 		new_token->value = WORD;
 		new_token->next = NULL;
 		if (!head)
@@ -172,9 +172,9 @@ t_token *make_token_list2(char **split)
 	while (split && split[i])
 	{
 		new_token = malloc (sizeof(t_token));
-		gc_add(0, new_token, NULL);
+		gc_add(0, new_token);
 		new_token->data = ft_strdup(split[i]);
-		gc_add(0, new_token->data, NULL);
+		gc_add(0, new_token->data);
 		new_token->value = get_token(split[i]);
 		new_token->next = NULL;
 		if (!head)
@@ -221,7 +221,7 @@ void extra_sanitize(t_token **head)
                 if (prev) 
                     prev->next = current;
             }
-			gc_add(0 , tmp , NULL);
+			gc_add(0 , tmp);
 		} 
 		else 
             current = current->next;
@@ -313,7 +313,7 @@ static void	handle_dollar_expansion(t_token *curr, t_env *env)
 			if (tmp && *tmp)
 			{
 				curr->data = ft_strjoin(curr->data, tmp);
-				gc_add(0, curr->data, NULL);
+				gc_add(0, curr->data);
 			}
 			else
 				*(curr->data + i) = '\0';
@@ -329,9 +329,9 @@ static void	handle_space_expansion(t_token **final, t_token **curr, t_token *pre
 	t_token	*last;
 
 	split = ft_split_expander(tmp);
-	gc_add_double(0, (void **)split, NULL);
+	gc_add_double(0, (void **)split);
 	next = token_to_char((*curr)->next);
-	gc_add_double(0, (void **)next, NULL);
+	gc_add_double(0, (void **)next);
 	if (*final == *curr)
 	{
 		*final = make_token_list(split);
@@ -371,7 +371,7 @@ static void	expand_token(t_token **final, t_token **curr, t_token *prev, t_env *
 	int		i;
 
 	(*curr)->data = ft_strdup((*curr)->data);
-	gc_add(0, (*curr)->data, NULL);
+	gc_add(0, (*curr)->data);
 	i = 0;
 	while ((*curr)->data[i])
 	{
@@ -382,7 +382,7 @@ static void	expand_token(t_token **final, t_token **curr, t_token *prev, t_env *
 			if (tmp && *tmp)
 			{
 				tmp = ft_strjoin((*curr)->data, tmp);
-				gc_add(0, tmp, NULL);
+				gc_add(0, tmp);
 				if (ft_strchr_for_space(tmp))
 					handle_space_expansion(final, curr, prev, tmp);
 				else

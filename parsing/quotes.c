@@ -62,7 +62,7 @@ void process_quotes(t_token **final)
         else if (curr->value == WORD) 
 		{
             processed = remove_quotes(curr->data);
-			gc_add(0, processed , NULL);
+			gc_add(0, processed);
             curr->data = processed;
         }
         curr = curr->next;

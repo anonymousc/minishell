@@ -52,7 +52,7 @@ t_memref	**gc_get_memrefs(int id)
 	return (&(gc_get_specific_memgroup(id)->mem_refs));
 }
 
-void	gc_add(int mem_group_id, void *mem, t_memref **store_memref)
+void	gc_add(int mem_group_id, void *mem)
 {
 	t_memref	**mem_ref;
 	t_memref	*new_mem_ref;
@@ -77,21 +77,19 @@ void	gc_add(int mem_group_id, void *mem, t_memref **store_memref)
 			curr = curr->next;
 		curr->next = new_mem_ref;
 	}
-	if (store_memref)
-		*store_memref = new_mem_ref;
 }
 
-void gc_add_double(int mem_group_id, void **mem, t_memref **store_memref)
+void gc_add_double(int mem_group_id, void **mem)
 {
 	int i;
 
 	i = 0;
 	while (mem && mem[i])
 	{
-		gc_add(mem_group_id, mem[i], store_memref);
+		gc_add(mem_group_id, mem[i]);
 		i++;
 	}
-	gc_add(mem_group_id, mem, store_memref);
+	gc_add(mem_group_id, mem);
 }
 
 void	gc_free_memrefs(t_memref *mem_ref)
@@ -110,8 +108,7 @@ void	gc_free_memrefs(t_memref *mem_ref)
 	}
 }
 
-void	gc_free_specific_memref(t_memref **mem_ref_head,
-		t_memref *mem_ref_to_free)
+void	gc_free_specific_memref(t_memref **mem_ref_head, t_memref *mem_ref_to_free)
 {
 	t_memref	*curr;
 	t_memref	*prev;

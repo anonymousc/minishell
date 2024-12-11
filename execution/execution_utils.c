@@ -54,12 +54,12 @@ char *find_path(char *cmd, char **env)
     if(ft_strchr(path_var , ':'))
     {
         paths = ft_split(path_var, ':');
-        gc_add_double(0 , (void **)paths, NULL);
+        gc_add_double(0 , (void **)paths);
     }
     else
     {
         paths = (char **)malloc(2 * sizeof(char *));
-        gc_add(0 , paths , NULL);
+        gc_add(0 , paths);
         paths[0] = remove_quotes(path_var);
         paths[1] = NULL;
 
@@ -68,9 +68,9 @@ char *find_path(char *cmd, char **env)
     while (paths && paths[i])
     {
         full_path = ft_strjoin(paths[i], "/");
-        gc_add(0 , full_path, NULL);
+        gc_add(0 , full_path);
         full_command = ft_strjoin(full_path, cmd);
-        gc_add(0 , full_command, NULL);
+        gc_add(0 , full_command);
         if (access(full_command, F_OK | X_OK) == 0)
             return (full_command);
         i++;    

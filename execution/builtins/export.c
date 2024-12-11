@@ -12,7 +12,7 @@ char **env_to_arr2(t_env *env)
 {
     int size = env_size(env);
     char **envir = malloc(sizeof(char *) * (size + 1));
-    gc_add(0 , envir, NULL);
+    gc_add(0 , envir);
     if (!envir)
         return NULL;
 
@@ -24,7 +24,7 @@ char **env_to_arr2(t_env *env)
         int len = var_len + val_len + 1 + 3 * (val_len != 0);
 
         envir[i] = malloc(len);
-        gc_add(0 , envir[i] , NULL);
+        gc_add(0 , envir[i]);
         int j = 0;
         if (!envir[i])
         {
@@ -88,7 +88,7 @@ t_env *find_env_variable (t_env *env, char *varname)
 t_env *creat_env_var (char *varname, char *value)
 {
     t_env *new_var = malloc(sizeof(t_env));
-    gc_add(0 , new_var , NULL);
+    gc_add(0 , new_var);
     new_var->variable = varname;
     new_var->value = value;
     new_var->next = NULL;
@@ -123,7 +123,7 @@ int update_existing_var(t_env *existing, char *value, int is_append)
     if (is_append)
     {
         new_value = ft_strjoin(existing->value, value);
-        gc_add(0 , new_value , NULL);
+        gc_add(0 , new_value);
         if (!new_value)
             return 0; 
         existing->value = new_value;
@@ -131,7 +131,7 @@ int update_existing_var(t_env *existing, char *value, int is_append)
     else
     {
         new_value = ft_strdup(value);
-        gc_add(0 , new_value , NULL);
+        gc_add(0 , new_value);
         if (!new_value)
             return 0;
         existing->value = new_value;
@@ -177,7 +177,7 @@ int export_with_value(t_env *env, char *arg, char *equal, char *plus)
     else
         name_len = equal - arg;
     var_name = malloc(name_len + 1);
-    gc_add(0 , var_name , NULL);
+    gc_add(0 , var_name);
     ft_strncpy(var_name, arg, name_len);
     var_name[name_len] = '\0';
     value = equal + 1;
@@ -219,7 +219,7 @@ char *stop_after_delim(char *s, char spec)
         i++;
     }
     char *data = malloc(i + 1);
-    gc_add(0 ,data , NULL);
+    gc_add(0 ,data);
     i = 0;
     while(s[i] != spec)
     {
@@ -229,49 +229,65 @@ char *stop_after_delim(char *s, char spec)
     data[i] = '\0';
     return data;
 }
+static int handle_single_args(char **env_array , int *fd_append, int *fd_out)
+{
+    int i;
+
+    i = 0;
+    while (env_array[i])
+    {
+        if (env_array[i][0] == '#') 
+        {
+            i++;
+            continue;
+        }
+        if(*fd_append == 1)
+            ft_printf(*fd_out, "declare -x %s=\"%s\"\n", stop_after_delim(env_array[i], '=')
+            , ft_strchr(env_array[i] , '=') + 1);
+        else
+            ft_printf(*fd_append, "declare -x %s=\"%s\"\n", stop_after_delim(env_array[i], '=')
+            , ft_strchr(env_array[i] , '=') + 1);
+        i++;
+    }
+    return 0;
+
+}
+
+char *duplicate_pwd(t_env *env)
+{
+    char *secure_value;
+    char *lekher;
+    char *secure_pwd;
+    
+    secure_value = find_env_variable2(env, "PWD");
+    secure_pwd = ft_strdup("#PWD=");
+    gc_add(0, secure_pwd);
+    lekher = ft_strjoin2(secure_pwd, secure_value);
+    gc_add(0 , lekher);
+    return (lekher);
+}
+
 int my_export(t_execution *exec , t_env **env, int fd, int fda)
 {
-    int i = 1;
-    char *secure_value = find_env_variable2(*env, "PWD");
-    char *secure_pwd = "#PWD=";
-    char *lekher = ft_strjoin2(secure_pwd, secure_value);
-    gc_add(0 , lekher , NULL);
+    int i;
+    char *lekher;
+    char **env_array;
+    char *arg;
+
+    env_array = sort_strings(env_to_arr2(*env), env_size(*env));
+    lekher = duplicate_pwd(*env);
     if(!exec)
-    {
-        process_export_arg(*env , lekher);
-        return 0;
-    }
+        return (process_export_arg(*env , lekher) ,0);
     if (!exec->cmd[1])
-    {
-        char **env_array = env_to_arr2(*env);
-        sort_strings(env_array, env_size(*env));
-        
-        i = 0;
-        while (env_array[i])
-        {
-            if (env_array[i][0] == '#') 
-            {
-                i++;
-                continue;
-            }
-            if(fda == 1)
-                ft_printf(fd, "declare -x %s=\"%s\"\n", stop_after_delim(env_array[i], '='), ft_strchr(env_array[i] , '=') + 1);
-            else
-                ft_printf(fda, "declare -x %s\n", env_array[i]);
-            i++;
-        }
-        return 0;
-    }
+        return (handle_single_args(env_array , &fda , &fd));
+    i = 1;
     while (exec->cmd[i])
     {
-        char *arg = exec->cmd[i];
-
+        arg = exec->cmd[i];
         if (is_valid_identifier(fd, arg) < 0)
             return 1;
-
         if (!process_export_arg(*env, arg))
             return 1;
-
         i++;
     }
     return 0;

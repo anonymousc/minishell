@@ -135,7 +135,6 @@ static char *qoutes_detailer(char *s , char **str , int *i)
 {
 	char q = *s;
 	str[(*i)] = ft_substr(s,0,quotes_cout_word(s + 1,q) + 2);
-	gc_add(0 ,str[(*i)], NULL);
 	s += quotes_cout_word(s + 1,q) + 2;
 	(*i)++;
 	return s;
@@ -152,7 +151,6 @@ static char *skip_checker(char *s, int *len)
 static char *isnt_asep(char **str , int *i, int *len, char *start)
 {
 	str[(*i)] = (char *)malloc(((*len) + 1) * sizeof(char));
-	// gc_add(0 , str , NULL);
 	ft_memcpy(str[(*i)], start, (*len));
 	str[(*i)][(*len)] = '\0';
 	return (str[(*i)]);
@@ -190,9 +188,12 @@ static char	**str_all_fill_v2(char **str, char const *s)
 char	**split_to_lex(char *s)
 {
 	char		**str;
+	char		**to_free;
 
 	if (!s)
 		return (NULL);
 	str = malloc((word_delim(s) + 1) * sizeof(char *));
-	return (str_all_fill_v2(str,  s));
+	to_free = str_all_fill_v2(str,  s);
+	gc_add_double(0 , (void **)to_free);
+	return (to_free);
 }

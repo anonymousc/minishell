@@ -10,13 +10,12 @@ int parsing(t_env **env ,t_execution **data)
 
 	line = NULL;
 	final = (t_token  **)malloc(sizeof(t_token *));
-	gc_add(0 , final , NULL);
+	gc_add(0 , final);
 	readline = retline();
 	if(!readline)
 		return 1;
 	line = split_to_lex(readline);
 	tokenization(line , final);
-	// gc_add_double(0 , (void **)line, NULL);
 	sanitizer(final);
 	if (check_syntax_extended(final))
 		return (exit_status = 2, 1);
@@ -49,7 +48,7 @@ int main (int ac, char **av, char **envp)
 	while(1)
 	{
 		data = (t_execution  **)malloc(sizeof(t_execution  *));
-		gc_add(0, data, NULL);
+		gc_add(0, data);
 		if (!env)
 			env = make_env(envp);
 		if(!data || parsing(&env, data))
