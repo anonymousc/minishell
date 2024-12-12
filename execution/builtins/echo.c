@@ -49,7 +49,6 @@ int my_echo (int fd , int fda, int ac, char **av)
         }
         start_i++;
     }
-
     if (new_line)
     {
         if(fda == 1)

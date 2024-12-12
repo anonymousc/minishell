@@ -4,9 +4,10 @@ t_env **unset_var(t_execution **exec, char *s, t_env **env)
 {
     (void)exec;
 
-    t_env *curr = *env;
+    t_env *curr;
     t_env *tmp;
 
+    curr = *env;
     if (curr && !ft_strcmp(curr->variable, s))
     {
         tmp = curr;

@@ -75,7 +75,7 @@ int redirect_io(t_execution **exec, int *flag)
         return -1;
     if (handle_input_redirection(exec) == -1)
         return -1;
-    handle_heredoc_redirection(exec);
-
+    if(handle_heredoc_redirection(exec) == -1)
+        return -1;
     return 0;
 }

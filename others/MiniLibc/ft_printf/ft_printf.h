@@ -3,24 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kali <kali@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: aessadik <aessadik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/06 14:25:28 by hatalhao          #+#    #+#             */
-/*   Updated: 2024/10/01 04:29:33 by kali             ###   ########.fr       */
+/*   Created: 2024/12/12 00:24:07 by aessadik          #+#    #+#             */
+/*   Updated: 2024/12/12 00:24:08 by aessadik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_PRINTF_H
 # define FT_PRINTF_H
 
-# include <unistd.h>
-# include <stdio.h>
-# include <stdarg.h>
-# include <stdlib.h>
 # include <limits.h>
+# include <stdarg.h>
+# include <stdio.h>
+# include <stdlib.h>
 # include <string.h>
+# include <unistd.h>
 
-int		ft_printf(int fd, char const	*str, ...);
+int		ft_printf(int fd, char const *str, ...);
 
 void	ft_spf(int fd, char spf, va_list args, int *l);
 void	ft_unsigned(int fd, unsigned int nb, int *c);

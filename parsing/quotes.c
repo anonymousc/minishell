@@ -1,70 +1,116 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   quotes.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aessadik <aessadik@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/11 22:26:45 by aessadik          #+#    #+#             */
+/*   Updated: 2024/12/11 22:34:26 by aessadik         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-char is_quote(char c) 
+int	check_in_db_or_sq(char *s)
 {
-    if (c == '\'') return '\'';
-    if (c == '"') return '"';
-    return 0;
-}
+	int	dq;
+	int	sq;
+	int	i;
 
-int count_chars_after_removal(char *s) 
-{
-    int count = 0;
-    int in_dquote = 0;
-    int in_squote = 0;
-    
-    while (s && *s) 
+	dq = 0;
+	sq = 0;
+	i = 0;
+	while (s[i])
 	{
-        char q = is_quote(*s);
-        if (q == '"' && !in_squote) 
-            in_dquote = !in_dquote;
-		else if (q == '\'' && !in_dquote) 
-            in_squote = !in_squote;
-		else 
-            count++;
-        s++;
-    }
-    return count;
-}
-
-char *remove_quotes(char *s) 
-{    
-    int len = count_chars_after_removal(s);
-    char *result = malloc(sizeof(char) * (len + 1));
-    int j = 0;
-	int i = 0; 
-    int in_dquote = 0;
-    int in_squote = 0;
-    
-    while (s && s[i]) 
-	{
-        char q = is_quote(s[i]);
-        if (q == '"' && !in_squote) 
-            in_dquote = !in_dquote;
-		else if (q == '\'' && !in_dquote) 
-            in_squote = !in_squote;
-		else 
-            result[j++] = s[i];
+		if (s[i] == '"' && !sq)
+			dq = 1;
+		if (s[i] == '\'' && !dq)
+			sq = 1;
 		i++;
-    }
-    result[j] = '\0';
-    return result;
+	}
+	if (dq)
+		return (2);
+	if (sq)
+		return (1);
+	return (0);
 }
 
-void process_quotes(t_token **final)
+char	is_quote(char c)
 {
-    t_token *curr = *final;
-    char *processed;
-    while (curr) 
+	if (c == '\'')
+		return ('\'');
+	if (c == '"')
+		return ('"');
+	return (0);
+}
+
+int	count_chars_after_removal(char *s)
+{
+	int		count;
+	int		in_dquote;
+	int		in_squote;
+	char	q;
+
+	count = 0;
+	in_dquote = 0;
+	in_squote = 0;
+	while (s && *s)
 	{
-		if(curr->value == HEREDOC && curr->next->next)
+		q = is_quote(*s);
+		if (q == '"' && !in_squote)
+			in_dquote = !in_dquote;
+		else if (q == '\'' && !in_dquote)
+			in_squote = !in_squote;
+		else
+			count++;
+		s++;
+	}
+	return (count);
+}
+
+char	*remove_quotes(char *s)
+{
+	t_quotes	data;
+	char		*result;
+
+	data.len = count_chars_after_removal(s);
+	result = malloc(sizeof(char) * (data.len + 1));
+	data.j = 0;
+	data.i = 0;
+	data.in_dquote = 0;
+	data.in_squote = 0;
+	while (s && s[data.i])
+	{
+		data.q = is_quote(s[data.i]);
+		if (data.q == '"' && !data.in_squote)
+			data.in_dquote = !data.in_dquote;
+		else if (data.q == '\'' && !data.in_dquote)
+			data.in_squote = !data.in_squote;
+		else
+			result[data.j++] = s[data.i];
+		data.i++;
+	}
+	result[data.j] = '\0';
+	return (result);
+}
+
+void	process_quotes(t_token **final)
+{
+	t_token	*curr;
+	char	*processed;
+
+	curr = *final;
+	while (curr)
+	{
+		if (curr->value == HEREDOC && curr->next->next)
 			curr = curr->next->next;
-        else if (curr->value == WORD) 
+		else if (curr->value == WORD)
 		{
-            processed = remove_quotes(curr->data);
+			processed = remove_quotes(curr->data);
 			gc_add(0, processed);
-            curr->data = processed;
-        }
-        curr = curr->next;
-    }
+			curr->data = processed;
+		}
+		curr = curr->next;
+	}
 }

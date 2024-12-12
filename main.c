@@ -1,60 +1,87 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aessadik <aessadik@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/11 22:27:06 by aessadik          #+#    #+#             */
+/*   Updated: 2024/12/12 03:10:08 by aessadik         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-int exit_status;
+int		g_exit_status;
 
-int parsing(t_env **env ,t_execution **data)
-{
-	char *readline;
-	char **line;
-	t_token  **final;
-
-	line = NULL;
-	final = (t_token  **)malloc(sizeof(t_token *));
-	gc_add(0 , final);
-	readline = retline();
-	if(!readline)
-		return 1;
-	line = split_to_lex(readline);
-	tokenization(line , final);
-	sanitizer(final);
-	if (check_syntax_extended(final))
-		return (exit_status = 2, 1);
-	expander_final(final , *env);
-	process_quotes(final);
-	free_spaces2(final);
-	for_execute(final , data , *env);
-	return 0;
-}
-
-void execution(t_execution **data ,char **envp ,t_env **env)
-{
-	execute_bins(data, envp , env);
-}
-
-void exit_minishell(int exit_code)
+void	exit_minishell(int exit_code)
 {
 	gc_free_all();
 	exit(exit_code);
 }
-
-int main (int ac, char **av, char **envp)
+void print_tokens(t_execution *list)
 {
+
+	while (list)
+	{
+		if(list->cmd)
+		{
+			for (size_t i = 0; list->cmd[i]; i++)
+				printf("commands == %s\n" , list->cmd[i]);
+		}
+		else
+			printf("not a valid data\n");
+		list = list->next;
+	}
+	
+}
+int	parsing(t_env **env, t_execution **data)
+{
+	char	*readline;
+	char	**line;
+	t_token	**final;
+
+	line = NULL;
+	final = (t_token **)malloc(sizeof(t_token *));
+	gc_add(0, final);
+	readline = retline();
+	if (!readline)
+		return (1);
+	line = split_to_lex(readline);
+	tokenization(line, final);
+	sanitizer(final);
+	if (check_syntax_extended(final))
+		return (g_exit_status = 2, 1);
+	expander_final(final, *env);
+	process_quotes(final);
+	free_spaces2(final);
+	for_execute(final, data, *env);
+	print_tokens(*data);
+	return (0);
+}
+
+void	execution(t_execution **data, char **envp, t_env **env)
+{
+	execute_bins(data, envp, env);
+}
+
+int	main(int ac, char **av, char **envp)
+{
+	t_execution	**data;
+	t_env		*env;
+
 	(void)ac;
 	(void)av;
-	t_execution **data;
-	t_env *env;
-
 	env = NULL;
-	while(1)
+	while (1)
 	{
-		data = (t_execution  **)malloc(sizeof(t_execution  *));
+		data = (t_execution **)malloc(sizeof(t_execution *));
 		gc_add(0, data);
 		if (!env)
 			env = make_env(envp);
-		if(!data || parsing(&env, data))
-			continue;
+		if (!data || parsing(&env, data))
+			continue ;
 		my_export(NULL, &env, 0, 0);
-		execution(data , envp, &env);
-		
+		execution(data, envp, &env);
 	}
 }

@@ -1,6 +1,5 @@
 #include "minishell.h"
 
-
 int execute_builtins(t_execution *exec  ,t_env **env, char **envs)
 {
     (void) envs;
@@ -21,7 +20,7 @@ int execute_builtins(t_execution *exec  ,t_env **env, char **envs)
     else if (ft_strncmp (exec->cmd[0] , "unset", 6) == 0)
         ret = my_unset(&exec, env);
     else if(ft_strncmp(exec->cmd[0], "exit" , 5) == 0)
-        my_exit(exec);
+       ret = my_exit(exec);
     return ret;
 }
 int check_builtins(t_execution *exec)

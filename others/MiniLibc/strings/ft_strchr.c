@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_strchr.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aessadik <aessadik@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/12 00:38:06 by aessadik          #+#    #+#             */
+/*   Updated: 2024/12/12 00:38:07 by aessadik         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*ft_strchr(const char *s, int c)
@@ -13,6 +25,23 @@ char	*ft_strchr(const char *s, int c)
 	{
 		if (s[i] == chr)
 			return ((char *)(s + i));
+		else
+			i++;
+	}
+	return (0);
+}
+
+char	*ft_strchr_for_space(char *tmp)
+{
+	size_t	i;
+	size_t	len;
+
+	i = 0;
+	len = ft_strlen(tmp);
+	while (tmp && i <= len)
+	{
+		if (tmp[i] == is_space_delta(tmp[i]))
+			return ((char *)(tmp + i));
 		else
 			i++;
 	}

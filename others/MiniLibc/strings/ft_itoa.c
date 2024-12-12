@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_itoa.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aessadik <aessadik@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/12 00:37:52 by aessadik          #+#    #+#             */
+/*   Updated: 2024/12/12 00:37:54 by aessadik         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static long	ft_count(long n)
@@ -53,7 +65,7 @@ char	*ft_itoa(int n)
 
 	nb = n;
 	ft_counter = ft_count(nb);
-	str = malloc (sizeof(char) * (ft_counter + 1));
+	str = malloc(sizeof(char) * (ft_counter + 1));
 	if (str == NULL)
 		return (NULL);
 	str[ft_counter] = '\0';

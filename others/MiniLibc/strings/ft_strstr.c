@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_strstr.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aessadik <aessadik@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/12 00:38:21 by aessadik          #+#    #+#             */
+/*   Updated: 2024/12/12 00:38:22 by aessadik         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*ft_strnstr(const char *haystack, const char *needle, size_t n)
@@ -17,8 +29,8 @@ char	*ft_strnstr(const char *haystack, const char *needle, size_t n)
 		return ((char *)(haystack));
 	while (haystack[i] && i < n)
 	{
-		while ((haystack[i + j] == needle[j]
-				&& needle[j] != '\0' && (i + j) < n))
+		while ((haystack[i + j] == needle[j] && needle[j] != '\0' && (i
+					+ j) < n))
 			j++;
 		if (needle[j] == '\0')
 			return ((char *)(haystack + i));
