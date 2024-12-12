@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aait-bou <aait-bou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aessadik <aessadik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 20:30:22 by aait-bou          #+#    #+#             */
-/*   Updated: 2024/12/12 21:57:42 by aait-bou         ###   ########.fr       */
+/*   Updated: 2024/12/13 00:18:10 by aessadik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,13 +82,13 @@ static int	handle_single_args(char **env_array, int *fd_append, int *fd_out)
 	while (env_array && env_array[i])
 	{
 		data = ft_strchr(env_array[i], '=');
-		if (!data)
-		{
-			ft_printf(*fd_out, "declare -x %s\n", env_array[i]);
-			i++;
-		}
+		if (!data && env_array[i][0] != '#')
+			ft_printf(*fd_out, "declare -x %s\n", env_array[i++]);
 		if (env_array[i] && env_array[i][0] == '#')
+		{
 			i++;
+			continue ;
+		}
 		if (env_array[i] && data && *fd_append == 1)
 			ft_printf(*fd_out, "declare -x %s=\"%s\"\n",
 				stop_after_delim(env_array[i], '='), data + 1);

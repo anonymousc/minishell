@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aait-bou <aait-bou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aessadik <aessadik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 00:32:37 by aessadik          #+#    #+#             */
-/*   Updated: 2024/12/12 22:14:28 by aait-bou         ###   ########.fr       */
+/*   Updated: 2024/12/13 00:05:05 by aessadik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,9 +220,11 @@ void						process_quotes(t_token **final);
 
 ////////////////////PARSER////////////////
 
+char						*ambugious_redirection(char *data, t_env *env);
+void						check_validity(char *data, int *fd_out, int *fflag);
 int							if_redir(t_token **curr);
 int							handle_input_redirection_parser(t_token **curr,
-								int *fd_out, int *fd_append, t_env *env);
+								int *fds, int *fflag, t_env *env);
 void						ft_lstadd_back_exec(t_execution **stacks,
 								t_execution *new);
 t_execution					*ft_lstnew_exec(int *fds, char **cmd, int cmdlen);
@@ -231,7 +233,7 @@ int							cmd_len(char **cmd);
 void						for_execute(t_token **final, t_execution **data,
 								t_env *env);
 int							handle_output_redirection_parser(t_token **curr,
-								int *fflag, int *dflag);
+								int *fflag, int *dflag, t_env *env);
 void						handle_append_parser(int *fds, int *fflag,
 								t_token **curr, t_env *env);
 void						handle_heredoc_parser(int *fd_heredoc,

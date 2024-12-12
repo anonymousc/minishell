@@ -2,7 +2,7 @@ NAME = minishell
 
 CC = cc
 
-CFLAGS = -Werror -Wall -Wextra  -I./include/ #-g3 -fsanitize=address
+CFLAGS = -Werror -Wall -Wextra  -I./include/ 
 
 SRC = parsing/expansion/expander.c parsing/expansion/expansion_helper.c parsing/expansion/ft_expansion_splitter.c parsing/expansion/utils.c parsing/expansion/utils2.c \
 	parsing/lexer/lexer.c parsing/lexer/lexer_quotes.c parsing/lexer/lexer_quotesII.c parsing/lexer/tokenize_lexer.c parsing/syntax/syntax.c parsing/syntax/syntax_checker.c \

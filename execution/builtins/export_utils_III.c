@@ -3,29 +3,46 @@
 /*                                                        :::      ::::::::   */
 /*   export_utils_III.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aait-bou <aait-bou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aessadik <aessadik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 20:30:14 by aait-bou          #+#    #+#             */
-/*   Updated: 2024/12/12 20:30:15 by aait-bou         ###   ########.fr       */
+/*   Updated: 2024/12/13 00:40:50 by aessadik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	is_valid_identifier(int fd, char *arg)
+int	check_first_character(int fd, char *arg)
 {
-	int	i;
-
-	i = 1;
-	fd = 2;
 	if (!ft_isalpha(arg[0]) && arg[0] != '_')
 	{
 		ft_printf(fd, "%s not a valid identifier\n", arg);
 		return (-1);
 	}
-	while (arg[i] && (arg[i] != '+' && arg[i] != '='))
+	return (0);
+}
+
+int	is_valid_identifier(int fd, char *arg)
+{
+	int	i;
+	int	plus_count;
+
+	i = 1;
+	fd = 2;
+	plus_count = 0;
+	check_first_character(fd, arg);
+	while (arg[i] && arg[i] != '=')
 	{
-		if (!ft_isalnum(arg[i]) && arg[i] != '_')
+		if (arg[i] == '+')
+		{
+			if (plus_count > 0 || arg[i + 1] != '=')
+			{
+				ft_printf(fd, "%s not a valid identifier\n", arg);
+				return (-1);
+			}
+			plus_count++;
+		}
+		else if (!ft_isalnum(arg[i]) && arg[i] != '_')
 		{
 			ft_printf(fd, "%s not a valid identifier\n", arg);
 			return (-1);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aait-bou <aait-bou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aessadik <aessadik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 00:38:06 by aessadik          #+#    #+#             */
-/*   Updated: 2024/12/12 22:16:51 by aait-bou         ###   ########.fr       */
+/*   Updated: 2024/12/12 23:41:53 by aessadik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,5 +64,5 @@ char	*ft_strchr_for_space(char *tmp)
 		else
 			i++;
 	}
-	return (0);
+	return (NULL);
 }

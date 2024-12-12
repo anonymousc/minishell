@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirects_io.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aait-bou <aait-bou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aessadik <aessadik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 20:30:34 by aait-bou          #+#    #+#             */
-/*   Updated: 2024/12/12 20:30:35 by aait-bou         ###   ########.fr       */
+/*   Updated: 2024/12/12 23:34:03 by aessadik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static int	handle_output_redirection(t_execution **exec, int *flag)
 	{
 		if ((*exec)->fds[0] == -3)
 			return (ft_printf(2, "minishell: ambiguous redirect\n"), -1);
-		if ((*exec)->fds[4] == -1)
+		if ((*exec)->fds[4] == 1)
 			return (ft_printf(2, "permission denied\n"), -1);
 		*flag = 1;
 		dup2((*exec)->fds[0], STDOUT_FILENO);
@@ -50,16 +50,18 @@ static int	handle_input_redirection(t_execution **exec)
 {
 	if ((*exec)->fds[1] != 0)
 	{
-		if ((*exec)->fds[1] == -3)
+		if ((*exec)->fds[4] == -3)
 		{
 			ft_printf(2, "minishell: ambiguous redirect\n");
 			return (-1);
 		}
-		if ((*exec)->fds[1] == -1 || (*exec)->fds[4] == 1)
+		if ((*exec)->fds[1] == -1)
 		{
 			ft_printf(2, "no such a file or directory\n");
 			return (-1);
 		}
+		else if ((*exec)->fds[4] == 1)
+			return (ft_printf(2, "permission denied\n"), -1);
 		dup2((*exec)->fds[1], STDIN_FILENO);
 		close((*exec)->fds[1]);
 	}
