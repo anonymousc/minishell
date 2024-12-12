@@ -6,7 +6,7 @@
 /*   By: aessadik <aessadik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 22:26:17 by aessadik          #+#    #+#             */
-/*   Updated: 2024/12/12 00:01:02 by aessadik         ###   ########.fr       */
+/*   Updated: 2024/12/12 05:32:24 by aessadik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ t_token **curr, t_token *prev, char *tmp)
 	split = ft_split_expander(tmp);
 	gc_add_double(0, (void **)split);
 	next = token_to_char((*curr)->next);
-	gc_add_double(0, (void **)next);
 	if (*final == *curr)
 	{
 		*final = make_token_list(split);

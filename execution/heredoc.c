@@ -19,10 +19,7 @@ static char	*namegen(void)
 	{
 		read(fd, buf, 1);
 		if (ft_isascii(*buf))
-		{
-			file[j] = *buf;
-			j++;
-		}
+			file[j++] = *buf;
 		i++;
 	}
 	file[j] = '\0';
@@ -65,6 +62,7 @@ char	*check_if_expandable(int *check, char *line, t_env *env)
 	}
 	return (line);
 }
+
 void	fork_herdoc(char *delim, int *fd, t_env *env, int *check)
 {
 	char	*line;
@@ -72,7 +70,7 @@ void	fork_herdoc(char *delim, int *fd, t_env *env, int *check)
 	signal(SIGINT, sig_heredoc);
 	while (1)
 	{
-		// signal(SIGINT, sig_heredoc);
+		signal(SIGINT, sig_heredoc);
 		line = readline(">");
 		if (!line)
 		{
@@ -82,7 +80,7 @@ void	fork_herdoc(char *delim, int *fd, t_env *env, int *check)
 		if (!ft_strncmp(delim, line, ft_strlen(delim) + 1))
 			break ;
 		line = check_if_expandable(check, line, env);
-		ft_printf(*fd , "%s\n", line);
+		ft_printf(*fd, "%s\n", line);
 		gc_add(0, line);
 	}
 	exit_minishell(0);

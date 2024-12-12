@@ -6,7 +6,7 @@
 /*   By: aessadik <aessadik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 22:27:06 by aessadik          #+#    #+#             */
-/*   Updated: 2024/12/12 03:10:08 by aessadik         ###   ########.fr       */
+/*   Updated: 2024/12/12 05:24:38 by aessadik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,22 +19,7 @@ void	exit_minishell(int exit_code)
 	gc_free_all();
 	exit(exit_code);
 }
-void print_tokens(t_execution *list)
-{
 
-	while (list)
-	{
-		if(list->cmd)
-		{
-			for (size_t i = 0; list->cmd[i]; i++)
-				printf("commands == %s\n" , list->cmd[i]);
-		}
-		else
-			printf("not a valid data\n");
-		list = list->next;
-	}
-	
-}
 int	parsing(t_env **env, t_execution **data)
 {
 	char	*readline;
@@ -56,7 +41,6 @@ int	parsing(t_env **env, t_execution **data)
 	process_quotes(final);
 	free_spaces2(final);
 	for_execute(final, data, *env);
-	print_tokens(*data);
 	return (0);
 }
 

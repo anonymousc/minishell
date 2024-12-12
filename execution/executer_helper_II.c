@@ -18,14 +18,15 @@ void	builtins_pipe(t_execution *curr, char **env, t_env **env1, int *flag)
 	g_exit_status = execute_builtins(curr, env1, env);
 	return (exit_minishell(0), (void)0);
 }
+
 void	ft_execve(t_execution *curr, char **env)
 {
-	char	*fullcmd;
-		struct stat data;
+	char		*fullcmd;
+	struct stat	data;
 
 	if (check_builtins(curr))
 		exit_minishell(0);
-	if (curr->cmd )
+	if (curr->cmd)
 	{
 		fullcmd = find_path(curr->cmd[0], env);
 		if (stat(fullcmd, &data) == 0 && S_ISDIR(data.st_mode))
@@ -33,7 +34,7 @@ void	ft_execve(t_execution *curr, char **env)
 				exit_minishell(126), (void)0);
 		if (!fullcmd || !*fullcmd)
 		{
-			ft_printf(2, "Command not found: %s\n", curr->cmd[0]);
+			ft_printf(2, "Command not found: '%s'\n", curr->cmd[0]);
 			exit_minishell(127);
 		}
 		if (execve(fullcmd, curr->cmd, env) == -1)
@@ -51,6 +52,7 @@ void	parent(int *i, int *cmd_count, int *prev_pipe, int *curr_pipe)
 		prev_pipe[1] = curr_pipe[1];
 	}
 }
+
 void	wait_for_children(int *pids, int *cmd_count)
 {
 	int	tmp1;

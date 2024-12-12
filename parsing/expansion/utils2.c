@@ -6,7 +6,7 @@
 /*   By: aessadik <aessadik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 22:26:31 by aessadik          #+#    #+#             */
-/*   Updated: 2024/12/11 22:44:53 by aessadik         ###   ########.fr       */
+/*   Updated: 2024/12/12 05:38:19 by aessadik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ char	**token_to_char(t_token *list)
 		list = list->next;
 	}
 	split[i] = NULL;
+	gc_add(0, split);
 	return (split);
 }
 

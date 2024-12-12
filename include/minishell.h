@@ -6,7 +6,7 @@
 /*   By: aessadik <aessadik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 00:32:37 by aessadik          #+#    #+#             */
-/*   Updated: 2024/12/12 02:16:45 by aessadik         ###   ########.fr       */
+/*   Updated: 2024/12/12 05:17:43 by aessadik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,7 @@ char						*ft_substr(char const *s, unsigned int start,
 char						*ft_strndup(char *str, size_t n);
 int							ft_atoi(char *nptr);
 char						*ft_strchr_for_space(char *tmp);
+int							handle_heredoc_redirection(t_execution **exec);
 
 //////////////////////////////////////
 /* ****************************** */

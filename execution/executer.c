@@ -1,17 +1,18 @@
 #include "minishell.h"
 
-void	execute_child_command(t_execution *curr, char **env, t_env **env1,
-		int **array, t_syntax *data)
+char	**execute_child_command(t_execution *curr, t_env **env1, int **array,
+		t_syntax *data)
 {
-	int	*prev_pipe;
-	int	*curr_pipe;
+	int		*prev_pipe;
+	int		*curr_pipe;
+	char	**env;
 
 	prev_pipe = array[1];
 	curr_pipe = array[2];
-	if (curr->cmd[0] && curr->cmd[0][0] == '\0')
-		exit_minishell(0);
 	if (redirect_io(&curr, &data->flag) == -1)
 		exit_minishell(1);
+	if (!curr->cmd[0] || !curr->cmd[0][0])
+		exit_minishell(0);
 	if (setup_input_redirection(&data->iter, prev_pipe) == -1)
 		exit_minishell(1);
 	if (setup_output_redirection(&data->iter, &data->cmd_count, curr_pipe,
@@ -22,7 +23,9 @@ void	execute_child_command(t_execution *curr, char **env, t_env **env1,
 		builtins_pipe(curr, env, env1, &data->flag);
 	else
 		ft_execve(curr, env);
+	return (env);
 }
+
 void	exec_single_builtin(t_execution *curr, char **env, t_env **env1,
 		int *cmd_count)
 {
@@ -47,6 +50,7 @@ int	**init_var_pipes(int **array, t_syntax *data)
 	gc_add(0, array[2]);
 	return (array);
 }
+
 void	execute_bins(t_execution **exec, char **env, t_env **env1)
 {
 	t_execution	*curr;
@@ -65,7 +69,7 @@ void	execute_bins(t_execution **exec, char **env, t_env **env1)
 		prepare_child_process(&data.iter, &data.cmd_count, array[2]);
 		array[0][data.iter] = fork();
 		if (array[0][data.iter] == 0)
-			execute_child_command(curr, env, env1, array, &data);
+			env = execute_child_command(curr, env1, array, &data);
 		else
 			parent(&data.iter, &data.cmd_count, array[1], array[2]);
 		curr = curr->next;
