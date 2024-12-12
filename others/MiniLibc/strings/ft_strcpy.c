@@ -1,27 +1,14 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_strcpy.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: aessadik <aessadik@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/12 00:38:12 by aessadik          #+#    #+#             */
-/*   Updated: 2024/12/12 00:38:13 by aessadik         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
 
-char	*ft_strncpy(char *dest, char *src, size_t n)
+char	*ft_strcpy(char *dest, const char *src)
 {
-	size_t	i;
+	char	*original_dest;
 
-	i = 0;
-	while (src && src[i] && i < n)
+	original_dest = dest;
+	while (*src != '\0')
 	{
-		dest[i] = src[i];
-		i++;
+		*dest++ = *src++;
 	}
-	dest[i] = '\0';
-	return (dest);
+	*dest = '\0';
+	return (original_dest);
 }

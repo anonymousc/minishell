@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_redirs.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aessadik <aessadik@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aait-bou <aait-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 22:25:45 by aessadik          #+#    #+#             */
-/*   Updated: 2024/12/12 03:02:37 by aessadik         ###   ########.fr       */
+/*   Updated: 2024/12/12 22:14:58 by aait-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int	handle_output_redirection_parser(t_token **curr, int *fflag, int *dflag)
 	return (fd_out);
 }
 
-void	handle_append_parser(int **fds, int *fflag, t_token **curr, t_env *env)
+void	handle_append_parser(int *fds, int *fflag, t_token **curr, t_env *env)
 {
 	char	*data;
 
@@ -89,13 +89,13 @@ void	handle_append_parser(int **fds, int *fflag, t_token **curr, t_env *env)
 			gc_add(0, (*curr)->next->data);
 			if (ft_strchr_for_space((*curr)->next->data)
 				|| !(*curr)->next->data)
-				*fds[2] = -3;
+				fds[2] = -3;
 		}
-		if (*fds[0] != 1 || *fds[2] == 1 || *fds[2] != -3)
-			*fds[0] = open((*curr)->next->data, O_CREAT | O_RDWR | O_APPEND,
+		if (fds[0] != 1 || fds[2] == 1 || fds[2] != -3)
+			fds[0] = open((*curr)->next->data, O_CREAT | O_RDWR | O_APPEND,
 					0666);
-		else if (*fds[2] != -3)
-			*fds[2] = open((*curr)->next->data, O_CREAT | O_RDWR | O_APPEND,
+		else if (fds[2] != -3)
+			fds[2] = open((*curr)->next->data, O_CREAT | O_RDWR | O_APPEND,
 					0666);
 		if (access((*curr)->next->data, R_OK | W_OK) == -1)
 			*fflag = 1;

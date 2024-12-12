@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aessadik <aessadik@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aait-bou <aait-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 00:32:37 by aessadik          #+#    #+#             */
-/*   Updated: 2024/12/12 05:17:43 by aessadik         ###   ########.fr       */
+/*   Updated: 2024/12/12 22:14:28 by aait-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,7 @@ char						*ft_strchr(const char *s, int c);
 int							ft_strcmp(char *s1, char *s2);
 int							ft_strncmp(const char *s1, const char *s2,
 								size_t n);
+char						*ft_strcpy(char *dest, const char *src);
 char						*ft_strncpy(char *dest, char *src, size_t n);
 char						*ft_strdup(char *src);
 char						*ft_strjoin(char *s, char *s1);
@@ -150,7 +151,7 @@ char						*ft_strndup(char *str, size_t n);
 int							ft_atoi(char *nptr);
 char						*ft_strchr_for_space(char *tmp);
 int							handle_heredoc_redirection(t_execution **exec);
-
+char						*ft_strchr_for_export(const char *s, int c);
 //////////////////////////////////////
 /* ****************************** */
 
@@ -231,7 +232,7 @@ void						for_execute(t_token **final, t_execution **data,
 								t_env *env);
 int							handle_output_redirection_parser(t_token **curr,
 								int *fflag, int *dflag);
-void						handle_append_parser(int **fds, int *fflag,
+void						handle_append_parser(int *fds, int *fflag,
 								t_token **curr, t_env *env);
 void						handle_heredoc_parser(int *fd_heredoc,
 								t_token **curr, t_env *env);
@@ -283,26 +284,31 @@ int							env_size(t_env *env);
 void						ft_close(int *fd1, int *fd2);
 int							ft_cmd_count(t_execution *curr);
 int							redirect_io(t_execution **exec, int *flag);
+int							validate_command(char *cmd);
 char						*find_path(char *cmd, char **env);
 char						**env_to_arr2(t_env *env);
 void						execute_bins(t_execution **exec, char **env,
 								t_env **env1);
-/// HEREDOC
+//////////////HEREDOC/////////////
 
+char						*namegen(void);
+char						*randgen(char *s);
+int							file_to_write_on(char **filename);
 void						here_doc_child(char *delim, int *fd1, t_env *env);
 int							here_doc(t_token **final, t_env *env);
 
-//////////
+///////////////////////////////////
 
-/// BUITLINS
+//////////////BUITLINS/////////////
 
-void						update_env_value(t_env *env, char *variable_name, char *new_value);
+void						update_env_value(t_env *env, char *variable_name,
+								char *new_value);
 t_env						*find_variable(t_env *env, char *variable_name);
 int							my_export(t_execution *exec, t_env **env, int fd,
 								int fda);
 int							my_cd(t_execution *exec, t_env *env);
 int							my_pwd(int fd, int fda, t_env *env);
-int						my_exit(t_execution *list);
+int							my_exit(t_execution *list);
 int							my_unset(t_execution **exec, t_env **env);
 int							my_env(int fd, int fda, t_env **env);
 int							my_echo(int fd, int fda, int ac, char **av);
@@ -311,28 +317,36 @@ int							execute_builtins(t_execution *exec, t_env **env,
 int							check_builtins(t_execution *exec);
 void						update_oldpwd(t_env *env, char *old_pwd);
 void						update_pwd(t_env *env);
-int							handle_single_argument(t_env *env ,  t_execution *exec);
-void 						swap(char **s1, char **s2);
-char 						**sort_strings(char **str, int len) ;
-int 						handle_existing_var(t_env *env, char *var_name, char *value, int is_append);
-int 						is_valid_identifier (int fd, char *arg);
-char 						*stop_after_delim(char *s, char spec);
-t_env 						*find_env_variable (t_env *env, char *varname);
-t_env 						*creat_env_var (char *varname, char *value);
-char 						*duplicate_pwd(t_env *env);
-int 						process_export_arg(t_env *env, char *arg);
-int	setup_input_redirection(int *i, int *prev_pipe);
-int	setup_output_redirection(int *i, int *cmd_count, int *curr_pipe, int *flag);
-void	builtins_pipe(t_execution *curr, char **env, t_env **env1, int *flag);
-void	ft_execve(t_execution *curr, char **env);
-void	parent(int *i, int *cmd_count, int *prev_pipe, int *curr_pipe);
-void	wait_for_children(int *pids, int *cmd_count);
-int	prepare_child_process(int *i, int *cmd_count, int *curr_pipe);
-int export_with_value(t_env *env, char *arg, char *equal, char *plus);
-int export_without_value(t_env *env, char *arg);
-int update_existing_var(t_env *existing, char *value, int is_append);
+int							handle_single_argument(t_env *env,
+								t_execution *exec);
+void						swap(char **s1, char **s2);
+char						**sort_strings(char **str, int len);
+int							handle_existing_var(t_env *env, char *var_name,
+								char *value, int is_append);
+int							is_valid_identifier(int fd, char *arg);
+char						*stop_after_delim(char *s, char spec);
+t_env						*find_env_variable(t_env *env, char *varname);
+t_env						*creat_env_var(char *varname, char *value);
+char						*duplicate_pwd(t_env *env);
+int							process_export_arg(t_env *env, char *arg);
+int							setup_input_redirection(int *i, int *prev_pipe);
+int							setup_output_redirection(int *i, int *cmd_count,
+								int *curr_pipe, int *flag);
+void						builtins_pipe(t_execution *curr, char **env,
+								t_env **env1, int *flag);
+void						ft_execve(t_execution *curr, char **env);
+void						parent(int *i, int *cmd_count, int *prev_pipe,
+								int *curr_pipe);
+void						wait_for_children(int *pids, int *cmd_count);
+int							prepare_child_process(int *i, int *cmd_count,
+								int *curr_pipe);
+int							export_with_value(t_env *env, char *arg,
+								char *equal, char *plus);
+int							export_without_value(t_env *env, char *arg);
+int							update_existing_var(t_env *existing, char *value,
+								int is_append);
 
-///////////
+///////////////////////////////////
 
 /***************************/
 

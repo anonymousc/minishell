@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export_utils_II.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aait-bou <aait-bou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/12 20:30:10 by aait-bou          #+#    #+#             */
+/*   Updated: 2024/12/12 22:18:50 by aait-bou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	swap(char **s1, char **s2)
@@ -31,16 +43,37 @@ char	**sort_strings(char **str, int len)
 	return (str);
 }
 
+char	*create_env_str(t_env *node)
+{
+	int		var_len;
+	int		val_len;
+	int		str_len;
+	char	*env_str;
+
+	var_len = ft_strlen(node->variable);
+	val_len = ft_strlen(node->value);
+	str_len = var_len + val_len + 2;
+	env_str = malloc(str_len);
+	gc_add(0, env_str);
+	if (!env_str)
+		return (NULL);
+	ft_strcpy(env_str, node->variable);
+	if (val_len > 0)
+	{
+		env_str[var_len] = '=';
+		ft_strcpy(env_str + var_len + 1, node->value);
+	}
+	else
+		env_str[var_len] = '\0';
+	return (env_str);
+}
+
 char	**env_to_arr2(t_env *env)
 {
 	int		size;
 	char	**envir;
 	int		i;
-	int		var_len;
-	int		val_len;
-	int		len;
-	int		j;
-	int		k;
+	t_env	*current;
 
 	size = env_size(env);
 	envir = malloc(sizeof(char *) * (size + 1));
@@ -48,36 +81,13 @@ char	**env_to_arr2(t_env *env)
 	if (!envir)
 		return (NULL);
 	i = 0;
-	while (env)
+	current = env;
+	while (current)
 	{
-		var_len = ft_strlen(env->variable);
-		val_len = ft_strlen(env->value);
-		len = var_len + val_len + 1 + 3 * (val_len != 0);
-		envir[i] = malloc(len);
-		gc_add(0, envir[i]);
-		j = 0;
-		if (!envir[i])
-		{
-			while (j < i)
-				j++;
-			return (NULL);
-		}
-		j = 0;
-		k = 0;
-		while (k < var_len)
-			envir[i][j++] = env->variable[k++];
-		if (val_len)
-		{
-			envir[i][j++] = '=';
-			k = 0;
-			while (k < val_len)
-				envir[i][j++] = env->value[k++];
-		}
-		envir[i][j] = '\0';
-		env = env->next;
+		envir[i] = create_env_str(current);
+		current = current->next;
 		i++;
 	}
 	envir[i] = NULL;
 	return (envir);
 }
-

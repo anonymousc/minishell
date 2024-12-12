@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   echo.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aait-bou <aait-bou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/12 20:29:59 by aait-bou          #+#    #+#             */
+/*   Updated: 2024/12/12 22:23:20 by aait-bou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 bool	check_newline(int ac, char **av, int *start_i)
@@ -24,19 +36,22 @@ bool	check_newline(int ac, char **av, int *start_i)
 	return (new_line);
 }
 
+int	print_helper(int fd, int fda)
+{
+	if (fda == 1)
+		ft_printf(fd, "\n");
+	else
+		ft_printf(fda, "\n");
+	return (0);
+}
+
 int	my_echo(int fd, int fda, int ac, char **av)
 {
 	int		start_i;
 	bool	new_line;
 
 	if (!av[1])
-	{
-		if (fda == 1)
-			ft_printf(fd, "\n");
-		else
-			ft_printf(fda, "\n");
-		return (false);
-	}
+		return (print_helper(fd, fda));
 	new_line = check_newline(ac, av, &start_i);
 	while (av[start_i] && start_i < ac)
 	{
@@ -54,11 +69,6 @@ int	my_echo(int fd, int fda, int ac, char **av)
 		start_i++;
 	}
 	if (new_line)
-	{
-		if (fda == 1)
-			ft_printf(fd, "\n");
-		else
-			ft_printf(fda, "\n");
-	}
+		print_helper(fd, fda);
 	return (0);
 }

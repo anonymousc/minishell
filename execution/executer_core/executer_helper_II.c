@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   executer_helper_II.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aait-bou <aait-bou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/12 20:30:38 by aait-bou          #+#    #+#             */
+/*   Updated: 2024/12/12 20:34:54 by aait-bou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	builtins_pipe(t_execution *curr, char **env, t_env **env1, int *flag)
@@ -67,6 +79,7 @@ void	wait_for_children(int *pids, int *cmd_count)
 	if (tmp1 == 130)
 		g_exit_status = tmp1;
 }
+
 int	prepare_child_process(int *i, int *cmd_count, int *curr_pipe)
 {
 	signal(SIGINT, sigfork);

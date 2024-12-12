@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aessadik <aessadik@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aait-bou <aait-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 22:25:51 by aessadik          #+#    #+#             */
-/*   Updated: 2024/12/12 02:47:44 by aessadik         ###   ########.fr       */
+/*   Updated: 2024/12/12 22:14:32 by aait-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	handle_redirs(int *fds, t_token **curr, t_env *env)
 	else if ((*curr)->value == HEREDOC)
 		handle_heredoc_parser(&fds[3], curr, env);
 	else if ((*curr)->value == APPEND)
-		handle_append_parser(&fds, &fds[4], curr, env);
+		handle_append_parser(fds, &fds[4], curr, env);
 }
 
 void	for_execute(t_token **final, t_execution **data, t_env *env)

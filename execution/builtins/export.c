@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aait-bou <aait-bou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/12 20:30:22 by aait-bou          #+#    #+#             */
+/*   Updated: 2024/12/12 21:57:42 by aait-bou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	update_existing_var(t_env *existing, char *value, int is_append)
@@ -63,25 +75,28 @@ int	export_without_value(t_env *env, char *arg)
 
 static int	handle_single_args(char **env_array, int *fd_append, int *fd_out)
 {
-	int	i;
+	int		i;
+	char	*data;
 
 	i = 0;
-	while (env_array[i])
+	while (env_array && env_array[i])
 	{
-		if (env_array[i][0] == '#')
+		data = ft_strchr(env_array[i], '=');
+		if (!data)
 		{
+			ft_printf(*fd_out, "declare -x %s\n", env_array[i]);
 			i++;
-			continue ;
 		}
-		if (*fd_append == 1)
+		if (env_array[i] && env_array[i][0] == '#')
+			i++;
+		if (env_array[i] && data && *fd_append == 1)
 			ft_printf(*fd_out, "declare -x %s=\"%s\"\n",
-				stop_after_delim(env_array[i], '='), ft_strchr(env_array[i],
-					'=') + 1);
-		else
+				stop_after_delim(env_array[i], '='), data + 1);
+		else if (env_array[i] && data && *fd_out == 1)
 			ft_printf(*fd_append, "declare -x %s=\"%s\"\n",
-				stop_after_delim(env_array[i], '='), ft_strchr(env_array[i],
-					'=') + 1);
-		i++;
+				stop_after_delim(env_array[i], '='), data + 1);
+		if (data)
+			i++;
 	}
 	return (0);
 }
