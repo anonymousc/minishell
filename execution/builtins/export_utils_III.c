@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_utils_III.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aessadik <aessadik@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aait-bou <aait-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 20:30:14 by aait-bou          #+#    #+#             */
-/*   Updated: 2024/12/13 00:40:50 by aessadik         ###   ########.fr       */
+/*   Updated: 2024/12/13 00:49:14 by aait-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,7 @@ int	is_valid_identifier(int fd, char *arg)
 			plus_count++;
 		}
 		else if (!ft_isalnum(arg[i]) && arg[i] != '_')
-		{
-			ft_printf(fd, "%s not a valid identifier\n", arg);
-			return (-1);
-		}
+			return (ft_printf(fd, "%s not a valid identifier\n", arg), -1);
 		i++;
 	}
 	return (0);
