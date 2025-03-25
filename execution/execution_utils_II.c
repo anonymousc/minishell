@@ -43,9 +43,9 @@ static char	**prepare_paths(char *path_var)
 	else
 	{
 		paths = (char **)malloc(2 * sizeof(char *));
-		gc_add(0, paths);
 		paths[0] = remove_quotes(path_var);
 		paths[1] = NULL;
+		gc_add(0, paths);
 	}
 	return (paths);
 }
